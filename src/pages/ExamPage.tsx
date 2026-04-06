@@ -123,7 +123,11 @@ function ExamLayout() {
           <QuestionCard
             questionNumber={qNum}
             total={total}
+            passage={meta?.passage}
             text={meta?.text ?? ''}
+            format={meta?.format}
+            image={meta?.image}
+            table={meta?.table}
             options={options}
             selectedIndex={resp?.selectedAnswer ?? null}
             onSelect={selectOption}

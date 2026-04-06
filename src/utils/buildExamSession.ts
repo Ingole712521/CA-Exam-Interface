@@ -1,4 +1,11 @@
-import type { ExamDefinition, ExamSessionState, QuestionResponse } from '../types/exam'
+import type {
+  ExamDefinition,
+  ExamSessionState,
+  QuestionFormat,
+  QuestionImageSpec,
+  QuestionResponse,
+  QuestionTableSpec,
+} from '../types/exam'
 import { shuffleArray, shuffleOptions } from './shuffle'
 
 export function buildNewSession(exam: ExamDefinition): ExamSessionState {
@@ -6,7 +13,11 @@ export function buildNewSession(exam: ExamDefinition): ExamSessionState {
     id: string
     sectionId: string
     sectionName: string
+    passage?: string
     text: string
+    format?: QuestionFormat
+    image?: QuestionImageSpec
+    table?: QuestionTableSpec
     options: string[]
     correctAnswer: number
   }[] = []
@@ -17,7 +28,11 @@ export function buildNewSession(exam: ExamDefinition): ExamSessionState {
         id: q.id,
         sectionId: sec.id,
         sectionName: sec.name,
+        passage: q.passage,
         text: q.question,
+        format: q.format,
+        image: q.image,
+        table: q.table,
         options: [...q.options],
         correctAnswer: q.correctAnswer,
       })
@@ -39,7 +54,11 @@ export function buildNewSession(exam: ExamDefinition): ExamSessionState {
     questionMeta[q.id] = {
       sectionId: q.sectionId,
       sectionName: q.sectionName,
+      ...(q.passage !== undefined ? { passage: q.passage } : {}),
       text: q.text,
+      ...(q.format !== undefined ? { format: q.format } : {}),
+      ...(q.image !== undefined ? { image: q.image } : {}),
+      ...(q.table !== undefined ? { table: q.table } : {}),
     }
     optionsByQuestion[q.id] = options
     correctIndexByQuestion[q.id] = correctIndex

@@ -1,4 +1,5 @@
 import type { ExamDefinition } from '../types/exam'
+import heroSample from '../assets/hero.png'
 
 export const mockExams: ExamDefinition[] = [
   {
@@ -44,6 +45,66 @@ export const mockExams: ExamDefinition[] = [
               'Drawings and Bank',
             ],
             correctAnswer: 0,
+          },
+          {
+            id: 'acc-theory-1',
+            format: 'theoretical',
+            passage:
+              'The money measurement concept states that only transactions measurable in monetary terms are recorded.\n\nMateriality is an override: trivial items may be expensed even if they could technically be capitalised, when the effect on decisions is immaterial.',
+            question:
+              'Which statement best reflects the interaction of money measurement and materiality?',
+            options: [
+              'All qualitative information must be recorded in the books.',
+              'Immaterial items may be treated pragmatically without breaking core recognition rules.',
+              'Materiality eliminates the need for monetary measurement.',
+              'Only cash transactions satisfy money measurement.',
+            ],
+            correctAnswer: 1,
+          },
+          {
+            id: 'acc-case-1',
+            format: 'case_study',
+            passage:
+              'Mira started a proprietorship on 1 April. She introduced ₹5,00,000 cash, borrowed ₹2,00,000 from a bank on a long-term loan, purchased furniture for ₹80,000 by cheque, and paid one year office rent of ₹1,20,000 in advance by cheque on the same day.',
+            question:
+              'Immediately after these transactions, what is the balance of the bank account in her books (before any other entries)?',
+            options: ['₹5,00,000', '₹3,00,000', '₹2,00,000', '₹4,20,000'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'acc-table-1',
+            format: 'table',
+            question:
+              'Using the trial balance excerpt below, what is the total of the debit column before balancing?',
+            table: {
+              caption: 'Trial balance (excerpt)',
+              headers: ['Account', 'Debit (₹)', 'Credit (₹)'],
+              rows: [
+                ['Cash', '40,000', '—'],
+                ['Capital', '—', '50,000'],
+                ['Purchases', '25,000', '—'],
+                ['Sales', '—', '18,000'],
+              ],
+            },
+            options: ['₹65,000', '₹68,000', '₹60,000', '₹55,000'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'acc-img-1',
+            format: 'image',
+            question:
+              'The illustration above is used only as a layout sample for image-based MCQs (figures, charts, scanned extracts). Which option describes a typical use in CA-style papers?',
+            image: {
+              src: heroSample,
+              alt: 'Decorative sample image for demonstration',
+            },
+            options: [
+              'Replacing all narrative requirements',
+              'Presenting diagrammatic or source-document based data',
+              'Eliminating the need for marks allocation',
+              'Restricting questions to subjective format only',
+            ],
+            correctAnswer: 1,
           },
         ],
       },
