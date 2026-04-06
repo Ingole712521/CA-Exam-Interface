@@ -12,7 +12,7 @@ export function ExamTabOverlays() {
       {tabSwitchWarningVisible && (
         <div
           role="alert"
-          className="fixed left-1/2 top-[72px] z-[90] w-[min(100%-1.5rem,42rem)] -translate-x-1/2 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 shadow-lg dark:border-amber-600 dark:bg-amber-950/90 dark:text-amber-50"
+          className="fixed left-1/2 top-[72px] z-90 w-[min(100%-1.5rem,42rem)] -translate-x-1/2 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 shadow-lg dark:border-amber-600 dark:bg-amber-950/90 dark:text-amber-50"
         >
           <div className="flex items-start gap-3">
             <span
