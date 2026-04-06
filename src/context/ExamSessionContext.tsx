@@ -63,7 +63,6 @@ export function ExamSessionProvider({
   const navigate = useNavigate()
   const examDef = useMemo(() => getExamById(examId), [examId])
   const examMissing = !examDef
-
   const [session, setSession] = useState<ExamSessionState | null>(null)
   const [remainingSeconds, setRemainingSeconds] = useState(0)
   const [tabSwitchWarningVisible, setTabSwitchWarningVisible] = useState(false)
@@ -72,14 +71,11 @@ export function ExamSessionProvider({
   >(null)
   const submittedRef = useRef(false)
   const tabViolationStartedRef = useRef(false)
-
   const sessionRef = useRef<ExamSessionState | null>(null)
   useEffect(() => {
     sessionRef.current = session
   }, [session])
-
   const submitExamRef = useRef<() => void>(() => {})
-
   const persist = useCallback((s: ExamSessionState) => {
     setSession(s)
   }, [])
@@ -191,7 +187,7 @@ export function ExamSessionProvider({
 
       const next = (s.tabHiddenCount ?? 0) + 1
       setSession({ ...s, tabHiddenCount: next })
-
+      console.log('next', next)
       if (next > TAB_SWITCH_LIMIT) {
         tabViolationStartedRef.current = true
         setTabViolationSecondsLeft(5)

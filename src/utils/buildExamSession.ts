@@ -69,7 +69,6 @@ export function buildNewSession(exam: ExamDefinition): ExamSessionState {
   }
 }
 
-/** Mark first question visited when session is brand new */
 export function ensureInitialVisit(state: ExamSessionState): ExamSessionState {
   const firstId = state.questionIds[0]
   if (!firstId) return state

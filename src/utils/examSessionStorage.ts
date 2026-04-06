@@ -28,7 +28,6 @@ export function clearExamSession(examId: string): void {
   localStorage.removeItem(sessionStorageKey(examId))
 }
 
-/** Clears saved progress so the next visit starts a new attempt */
 export function startFreshExamAttempt(examId: string): void {
   clearExamSession(examId)
 }
