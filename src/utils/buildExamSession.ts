@@ -47,10 +47,10 @@ export function buildNewSession(exam: ExamDefinition): ExamSessionState {
   const responses: Record<string, QuestionResponse> = {}
 
   for (const q of shuffledQs) {
-    const { options, correctIndex } = shuffleOptions(
-      q.options,
-      q.correctAnswer,
-    )
+    const isUpload = q.format === 'upload'
+    const { options, correctIndex } = isUpload
+      ? { options: q.options, correctIndex: q.correctAnswer }
+      : shuffleOptions(q.options, q.correctAnswer)
     questionMeta[q.id] = {
       sectionId: q.sectionId,
       sectionName: q.sectionName,
@@ -64,6 +64,8 @@ export function buildNewSession(exam: ExamDefinition): ExamSessionState {
     correctIndexByQuestion[q.id] = correctIndex
     responses[q.id] = {
       selectedAnswer: null,
+      uploadedAnswerImage: null,
+      uploadedAnswerFileName: null,
       visited: false,
       markedForReview: false,
     }

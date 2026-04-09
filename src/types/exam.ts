@@ -5,6 +5,7 @@ export type QuestionFormat =
   | 'case_study'
   | 'image'
   | 'table'
+  | 'upload'
 
 export interface QuestionTableSpec {
   caption?: string
@@ -26,8 +27,15 @@ export interface RawQuestion {
   passage?: string
   /** The actual question line (or full stem if no passage). */
   question: string
+  /**
+   * For MCQs, provide options.
+   * For upload-type questions, keep this empty.
+   */
   options: string[]
-  /** 0-based index into `options` before shuffle */
+  /**
+   * 0-based index into `options` before shuffle (MCQs only).
+   * For upload-type questions, this value is ignored.
+   */
   correctAnswer: number
   /** Presentation hint for badge and layout. */
   format?: QuestionFormat
@@ -50,6 +58,12 @@ export interface ExamDefinition {
 
 export interface QuestionResponse {
   selectedAnswer: number | null
+  /**
+   * Data URL for uploaded answer image (upload-type questions).
+   * Stored in localStorage; keep uploads small to avoid quota issues.
+   */
+  uploadedAnswerImage: string | null
+  uploadedAnswerFileName: string | null
   visited: boolean
   markedForReview: boolean
 }

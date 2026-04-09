@@ -9,6 +9,7 @@ const FORMAT_LABEL: Record<Exclude<QuestionFormat, 'standard'>, string> = {
   case_study: 'Case study',
   image: 'Image-based',
   table: 'Table / Data',
+  upload: 'Upload answer',
 }
 
 type Props = {
@@ -22,6 +23,9 @@ type Props = {
   options: string[]
   selectedIndex: number | null
   onSelect: (index: number) => void
+  uploadedAnswerImage?: string | null
+  uploadedAnswerFileName?: string | null
+  onUploadAnswerImage?: (dataUrl: string, fileName: string | null) => void
 }
 
 function QuestionTableBlock({ spec }: { spec: QuestionTableSpec }) {
@@ -79,8 +83,12 @@ export function QuestionCard({
   options,
   selectedIndex,
   onSelect,
+  uploadedAnswerImage,
+  uploadedAnswerFileName,
+  onUploadAnswerImage,
 }: Props) {
   const showBadge = format && format !== 'standard'
+  const isUpload = format === 'upload'
 
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -116,39 +124,82 @@ export function QuestionCard({
       <h2 className="mb-6 text-base font-medium leading-relaxed text-slate-900 dark:text-slate-100">
         <span className="whitespace-pre-line">{text}</span>
       </h2>
-      <ul className="space-y-3" role="radiogroup" aria-label="Answer choices">
-        {options.map((opt, i) => {
-          const selected = selectedIndex === i
-          return (
-            <li key={i}>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                onClick={() => onSelect(i)}
-                className={`flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left text-sm transition ${
-                  selected
-                    ? 'border-emerald-500 bg-emerald-50 ring-1 ring-emerald-500 dark:border-emerald-400 dark:bg-emerald-950/40 dark:ring-emerald-400'
-                    : 'border-slate-200 bg-slate-50/80 hover:border-slate-300 hover:bg-white dark:border-slate-600 dark:bg-slate-800/50 dark:hover:border-slate-500 dark:hover:bg-slate-800'
-                }`}
-              >
-                <span
-                  className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold ${
+      {isUpload ? (
+        <div className="space-y-3">
+          <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 dark:border-slate-700 dark:bg-slate-800/50">
+            <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+              Upload your answer image
+            </p>
+            <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+              Take a clear photo/scan and upload it here. Your upload is saved in this
+              browser automatically.
+            </p>
+            <input
+              type="file"
+              accept="image/*"
+              className="mt-3 block w-full text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-emerald-600 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white hover:file:bg-emerald-700 dark:text-slate-200 dark:file:bg-emerald-500 dark:hover:file:bg-emerald-600"
+              onChange={(e) => {
+                const file = e.currentTarget.files?.[0]
+                if (!file || !onUploadAnswerImage) return
+                const reader = new FileReader()
+                reader.onload = () => {
+                  const dataUrl = typeof reader.result === 'string' ? reader.result : null
+                  if (!dataUrl) return
+                  onUploadAnswerImage(dataUrl, file.name || null)
+                }
+                reader.readAsDataURL(file)
+              }}
+            />
+          </div>
+
+          {uploadedAnswerImage ? (
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-900/40 dark:bg-emerald-950/30">
+              <p className="text-xs font-medium text-emerald-900 dark:text-emerald-200">
+                Uploaded{uploadedAnswerFileName ? `: ${uploadedAnswerFileName}` : ''}
+              </p>
+              <img
+                src={uploadedAnswerImage}
+                alt="Uploaded answer preview"
+                className="mt-3 max-h-80 w-full max-w-xl rounded-lg border border-emerald-200 object-contain dark:border-emerald-900/40"
+              />
+            </div>
+          ) : null}
+        </div>
+      ) : (
+        <ul className="space-y-3" role="radiogroup" aria-label="Answer choices">
+          {options.map((opt, i) => {
+            const selected = selectedIndex === i
+            return (
+              <li key={i}>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => onSelect(i)}
+                  className={`flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left text-sm transition ${
                     selected
-                      ? 'border-emerald-600 bg-emerald-600 text-white dark:border-emerald-400 dark:bg-emerald-400 dark:text-slate-900'
-                      : 'border-slate-300 text-slate-500 dark:border-slate-500 dark:text-slate-400'
+                      ? 'border-emerald-500 bg-emerald-50 ring-1 ring-emerald-500 dark:border-emerald-400 dark:bg-emerald-950/40 dark:ring-emerald-400'
+                      : 'border-slate-200 bg-slate-50/80 hover:border-slate-300 hover:bg-white dark:border-slate-600 dark:bg-slate-800/50 dark:hover:border-slate-500 dark:hover:bg-slate-800'
                   }`}
                 >
-                  {String.fromCharCode(65 + i)}
-                </span>
-                <span className="whitespace-pre-line text-slate-800 dark:text-slate-200">
-                  {opt}
-                </span>
-              </button>
-            </li>
-          )
-        })}
-      </ul>
+                  <span
+                    className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold ${
+                      selected
+                        ? 'border-emerald-600 bg-emerald-600 text-white dark:border-emerald-400 dark:bg-emerald-400 dark:text-slate-900'
+                        : 'border-slate-300 text-slate-500 dark:border-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    {String.fromCharCode(65 + i)}
+                  </span>
+                  <span className="whitespace-pre-line text-slate-800 dark:text-slate-200">
+                    {opt}
+                  </span>
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </article>
   )
 }

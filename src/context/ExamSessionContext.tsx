@@ -39,6 +39,7 @@ type ExamSessionContextValue = {
   dismissTabSwitchWarning: () => void
   tabViolationSecondsLeft: number | null
   selectOption: (optionIndex: number) => void
+  setUploadedAnswerImage: (dataUrl: string, fileName: string | null) => void
   goToIndex: (index: number) => void
   next: () => void
   prev: () => void
@@ -217,7 +218,10 @@ export function ExamSessionProvider({
   const answeredCount = useMemo(() => {
     if (!session) return 0
     return session.questionIds.filter(
-      (qid) => session.responses[qid]?.selectedAnswer !== null,
+      (qid) => {
+        const r = session.responses[qid]
+        return r?.selectedAnswer !== null || r?.uploadedAnswerImage !== null
+      },
     ).length
   }, [session])
 
@@ -233,6 +237,32 @@ export function ExamSessionProvider({
           [currentQuestionId]: {
             ...r,
             selectedAnswer: optionIndex,
+            // if they select MCQ now, clear any previously uploaded image for this question
+            uploadedAnswerImage: null,
+            uploadedAnswerFileName: null,
+            visited: true,
+          },
+        },
+      })
+    },
+    [session, currentQuestionId, persist],
+  )
+
+  const setUploadedAnswerImage = useCallback(
+    (dataUrl: string, fileName: string | null) => {
+      if (!session || !currentQuestionId || session.submittedAt) return
+      const r = session.responses[currentQuestionId]
+      if (!r) return
+      persist({
+        ...session,
+        responses: {
+          ...session.responses,
+          [currentQuestionId]: {
+            ...r,
+            uploadedAnswerImage: dataUrl,
+            uploadedAnswerFileName: fileName,
+            // upload questions aren’t MCQ; keep selectedAnswer empty
+            selectedAnswer: null,
             visited: true,
           },
         },
@@ -300,6 +330,8 @@ export function ExamSessionProvider({
         [currentQuestionId]: {
           ...r,
           selectedAnswer: null,
+          uploadedAnswerImage: null,
+          uploadedAnswerFileName: null,
           visited: true,
         },
       },
@@ -349,6 +381,7 @@ export function ExamSessionProvider({
       dismissTabSwitchWarning,
       tabViolationSecondsLeft,
       selectOption,
+      setUploadedAnswerImage,
       goToIndex,
       next,
       prev,
@@ -367,6 +400,7 @@ export function ExamSessionProvider({
       dismissTabSwitchWarning,
       tabViolationSecondsLeft,
       selectOption,
+      setUploadedAnswerImage,
       goToIndex,
       next,
       prev,

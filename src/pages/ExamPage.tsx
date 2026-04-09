@@ -17,6 +17,7 @@ function ExamLayout() {
     currentSectionName,
     answeredCount,
     selectOption,
+    setUploadedAnswerImage,
     goToIndex,
     next,
     prev,
@@ -131,6 +132,9 @@ function ExamLayout() {
             options={options}
             selectedIndex={resp?.selectedAnswer ?? null}
             onSelect={selectOption}
+            uploadedAnswerImage={resp?.uploadedAnswerImage ?? null}
+            uploadedAnswerFileName={resp?.uploadedAnswerFileName ?? null}
+            onUploadAnswerImage={setUploadedAnswerImage}
           />
         </section>
 

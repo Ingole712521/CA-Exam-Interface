@@ -42,7 +42,7 @@ export function ExamTabOverlays() {
 
       {tabViolationSecondsLeft !== null && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/70 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-slate-900/70 p-4 backdrop-blur-sm"
           role="alertdialog"
           aria-modal="true"
           aria-labelledby="tab-violation-title"

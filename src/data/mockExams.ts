@@ -24,6 +24,88 @@ export const mockExams: ExamDefinition[] = [
             correctAnswer: 0,
           },
           {
+            id: 'acc-bs-1',
+            question:
+              'Which of the following is classified as a current asset on a balance sheet?',
+            options: ['Goodwill', 'Prepaid rent', 'Furniture', 'Patent'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'acc-bs-2',
+            question:
+              'A bank overdraft (repayable on demand) is generally shown on the balance sheet under:',
+            options: [
+              'Current liabilities',
+              'Non-current liabilities',
+              'Reserves & surplus',
+              'Non-current assets',
+            ],
+            correctAnswer: 0,
+          },
+          {
+            id: 'acc-bs-3',
+            question:
+              'If total assets are ₹18,00,000 and total liabilities are ₹6,50,000, the capital (equity) is:',
+            options: ['₹11,50,000', '₹24,50,000', '₹6,50,000', '₹18,00,000'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'acc-bs-4',
+            question:
+              'If a machine costing ₹2,00,000 is purchased on credit, what is the immediate effect on the balance sheet?',
+            options: [
+              'Assets increase and liabilities increase by ₹2,00,000',
+              'Assets increase and capital increases by ₹2,00,000',
+              'Assets decrease and liabilities decrease by ₹2,00,000',
+              'Capital decreases by ₹2,00,000',
+            ],
+            correctAnswer: 0,
+          },
+          {
+            id: 'acc-bs-table-1',
+            format: 'table',
+            question:
+              'Based on the balance sheet extract below, what is the current ratio?',
+            table: {
+              caption: 'Balance sheet extract (₹)',
+              headers: ['Particulars', 'Amount'],
+              rows: [
+                ['Inventory', '2,40,000'],
+                ['Trade receivables', '1,60,000'],
+                ['Cash & bank', '80,000'],
+                ['Trade payables', '2,00,000'],
+                ['Outstanding expenses', '40,000'],
+              ],
+            },
+            options: ['1.0 : 1', '1.5 : 1', '2.0 : 1', '2.4 : 1'],
+            correctAnswer: 2,
+          },
+          {
+            id: 'acc-bs-theory-1',
+            format: 'theoretical',
+            passage:
+              'Current items are expected to be realised/settled within the normal operating cycle or within 12 months.\n\nNon-current items are all other assets and liabilities.',
+            question:
+              'Which statement is most appropriate for classifying items on the balance sheet?',
+            options: [
+              'All loans are non-current by default.',
+              'Classification depends only on legal form, not timing.',
+              'Operating cycle / 12-month criterion is central to current vs non-current.',
+              'Only cash and bank balances are current assets.',
+            ],
+            correctAnswer: 2,
+          },
+          {
+            id: 'acc-bs-upload-1',
+            format: 'upload',
+            passage:
+              'From the following particulars, prepare a balance sheet of Mr. Somesh as at 31st March 2021:\n\nCapital ₹5,50,000\nDrawings ₹10,000\nSundry Debtors ₹1,00,000\nSundry Creditors ₹80,000\nLoan from Bank ₹20,000\nNet Profit ₹1,60,000\nClosing Stock ₹50,000\nPlant and Machinery ₹1,50,000\nBuilding ₹1,20,000\nLand ₹3,00,000\nGoodwill ₹50,000\nFurniture and Fixtures ₹30,000',
+            question:
+              'Prepare the Balance Sheet (upload a clear image/photo of your working and final format).',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
             id: 'acc-2',
             question: 'Depreciation is allocated to match which accounting concept?',
             options: [

@@ -16,6 +16,9 @@ export function computeResult(session: ExamSessionState): ExamResult {
     const right = session.correctIndexByQuestion[qid]
     const sectionName = meta?.sectionName ?? 'Unknown'
 
+    // Upload-type questions are not auto-gradable; exclude them from scoring.
+    if (meta?.format === 'upload') continue
+
     if (!sectionMap.has(sectionName)) {
       sectionMap.set(sectionName, { correct: 0, total: 0 })
     }

@@ -22,7 +22,7 @@ function cellClass(
   if (r?.markedForReview) {
     state =
       'border-amber-400 bg-amber-100 text-amber-900 dark:border-amber-500 dark:bg-amber-900/40 dark:text-amber-100'
-  } else if (r?.selectedAnswer !== null) {
+  } else if (r?.selectedAnswer !== null || r?.uploadedAnswerImage !== null) {
     state =
       'border-emerald-500 bg-emerald-100 text-emerald-900 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-100'
   } else if (r?.visited) {
