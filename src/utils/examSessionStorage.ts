@@ -5,6 +5,7 @@ const SUFFIX = '_session'
 const USER_KEY = 'ca_user'
 const THEME_KEY = 'ca_theme'
 const LAST_RESULT_KEY = 'ca_last_result'
+const PAID_RESULT_PREFIX = 'ca_result_paid_'
 
 export function sessionStorageKey(examId: string): string {
   return `${PREFIX}${examId}${SUFFIX}`
@@ -71,10 +72,26 @@ export function loadLastResult(): ExamResult | null {
   try {
     const raw = localStorage.getItem(LAST_RESULT_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as ExamResult
+    const r = JSON.parse(raw) as ExamResult
+    if (typeof r.gradableQuestionCount !== 'number') {
+      r.gradableQuestionCount = r.totalQuestions
+    }
+    if (typeof r.uploadQuestionCount !== 'number') {
+      r.uploadQuestionCount = 0
+    }
+    return r
   } catch {
     return null
   }
+}
+
+export function isResultPaidForExam(examId: string): boolean {
+  return localStorage.getItem(PAID_RESULT_PREFIX + examId) === '1'
+}
+
+/** Demo stand-in for payment: unlocks viewing scores for that test. */
+export function setResultPaidForExam(examId: string): void {
+  localStorage.setItem(PAID_RESULT_PREFIX + examId, '1')
 }
 
 export function saveLastResult(result: ExamResult): void {

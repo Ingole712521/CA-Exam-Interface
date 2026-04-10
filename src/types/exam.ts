@@ -43,16 +43,27 @@ export interface RawQuestion {
   table?: QuestionTableSpec
 }
 
+/** Foundation syllabus: Accounts & Law are subjective papers; Economics & Mathematics are MCQ. */
+export type SectionAssessmentType = 'subjective' | 'mcq'
+
 export interface RawSection {
   id: string
   name: string
+  /** How this subject is assessed per CA Foundation overview (UI copy). */
+  assessmentType?: SectionAssessmentType
   questions: RawQuestion[]
 }
+
+export type CaLevel = 'foundation' | 'intermediate' | 'final'
 
 export interface ExamDefinition {
   id: string
   title: string
   durationMinutes: number
+  /** CA programme level (phase 1 targets Foundation only). */
+  level: CaLevel
+  /** Per-test fee label shown to students (each test has its own fee). */
+  feeDisplay: string
   sections: RawSection[]
 }
 
@@ -104,9 +115,14 @@ export interface ExamResult {
   examId: string
   examTitle: string
   totalQuestions: number
+  /** Questions auto-graded in the client (excludes upload / subjective file answers). */
+  gradableQuestionCount: number
+  /** Upload-type answers pending back-end admin evaluation. */
+  uploadQuestionCount: number
   correct: number
   incorrect: number
   unanswered: number
+  /** Share of auto-graded items answered correctly. */
   percentage: number
   sections: SectionScore[]
   completedAt: number

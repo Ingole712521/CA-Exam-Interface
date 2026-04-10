@@ -8,6 +8,7 @@ export function computeResult(session: ExamSessionState): ExamResult {
   let correct = 0
   let incorrect = 0
   let unanswered = 0
+  let uploadQuestionCount = 0
   const sectionMap = new Map<string, { correct: number; total: number }>()
 
   for (const qid of session.questionIds) {
@@ -16,8 +17,11 @@ export function computeResult(session: ExamSessionState): ExamResult {
     const right = session.correctIndexByQuestion[qid]
     const sectionName = meta?.sectionName ?? 'Unknown'
 
-    // Upload-type questions are not auto-gradable; exclude them from scoring.
-    if (meta?.format === 'upload') continue
+    // Upload-type answers are evaluated by admin; not auto-graded here.
+    if (meta?.format === 'upload') {
+      uploadQuestionCount += 1
+      continue
+    }
 
     if (!sectionMap.has(sectionName)) {
       sectionMap.set(sectionName, { correct: 0, total: 0 })
@@ -36,10 +40,11 @@ export function computeResult(session: ExamSessionState): ExamResult {
   }
 
   const totalQuestions = session.questionIds.length
+  const gradableQuestionCount = totalQuestions - uploadQuestionCount
   const percentage =
-    totalQuestions === 0
+    gradableQuestionCount === 0
       ? 0
-      : Math.round((correct / totalQuestions) * 1000) / 10
+      : Math.round((correct / gradableQuestionCount) * 1000) / 10
 
   const sections: SectionScore[] = Array.from(sectionMap.entries()).map(
     ([name, { correct: c, total }]) => ({
@@ -53,6 +58,8 @@ export function computeResult(session: ExamSessionState): ExamResult {
     examId: session.examId,
     examTitle: session.examTitle,
     totalQuestions,
+    gradableQuestionCount,
+    uploadQuestionCount,
     correct,
     incorrect,
     unanswered,

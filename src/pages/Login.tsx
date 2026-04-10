@@ -35,7 +35,8 @@ export default function Login() {
           Sign in
         </h1>
         <p className="mb-6 text-sm text-slate-500 dark:text-slate-400">
-          CA Student Exam Interface — local demo (no server).
+          Online examination portal for CA students — local demo (no server). Admin
+          approval is skipped here.
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

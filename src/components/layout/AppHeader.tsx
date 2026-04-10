@@ -17,7 +17,7 @@ export function AppHeader() {
           to="/dashboard"
           className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white"
         >
-          CA Exam<span className="text-emerald-600 dark:text-emerald-400">Lab</span>
+          CA<span className="text-emerald-600 dark:text-emerald-400"> Examination</span>
         </Link>
         <nav className="flex flex-wrap items-center gap-1">
           <NavLink

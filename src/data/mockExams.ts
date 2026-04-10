@@ -6,10 +6,13 @@ export const mockExams: ExamDefinition[] = [
     id: 'ca-foundation-mock-1',
     title: 'CA Foundation — Integrated Mock Test',
     durationMinutes: 180,
+    level: 'foundation',
+    feeDisplay: '₹499',
     sections: [
       {
         id: 'accounts',
         name: 'Accounts',
+        assessmentType: 'subjective',
         questions: [
           {
             id: 'acc-1',
@@ -192,7 +195,8 @@ export const mockExams: ExamDefinition[] = [
       },
       {
         id: 'law',
-        name: 'Business Laws',
+        name: 'Law',
+        assessmentType: 'subjective',
         questions: [
           {
             id: 'law-1',
@@ -217,11 +221,64 @@ export const mockExams: ExamDefinition[] = [
             ],
             correctAnswer: 2,
           },
+          {
+            id: 'law-u1',
+            format: 'upload',
+            passage:
+              'Section 10 of the Indian Contract Act, 1872 lists essentials of a valid contract.',
+            question:
+              'Briefly explain any two essentials of a valid contract with simple examples. Upload a clear image of your written answer.',
+            options: [],
+            correctAnswer: 0,
+          },
         ],
       },
       {
-        id: 'quant',
-        name: 'Quantitative Aptitude',
+        id: 'economics',
+        name: 'Economics',
+        assessmentType: 'mcq',
+        questions: [
+          {
+            id: 'econ-1',
+            question:
+              'When demand increases and supply is unchanged, ceteris paribus, equilibrium price typically:',
+            options: ['Falls', 'Rises', 'Is unchanged', 'Becomes negative'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'econ-2',
+            question: 'GDP at market prices is the sum of final goods and services valued at:',
+            options: [
+              'Factor cost only',
+              'Market prices',
+              'Wholesale prices only',
+              'Constant prices from a single base year only',
+            ],
+            correctAnswer: 1,
+          },
+          {
+            id: 'econ-table-1',
+            format: 'table',
+            question:
+              'From the demand schedule below, when price falls from ₹40 to ₹20, quantity demanded rises from 100 to 180 units. Total expenditure at ₹40 is:',
+            table: {
+              caption: 'Demand schedule (illustrative)',
+              headers: ['Price (₹)', 'Quantity'],
+              rows: [
+                ['40', '100'],
+                ['30', '140'],
+                ['20', '180'],
+              ],
+            },
+            options: ['₹2,000', '₹4,000', '₹3,600', '₹6,000'],
+            correctAnswer: 1,
+          },
+        ],
+      },
+      {
+        id: 'mathematics',
+        name: 'Mathematics',
+        assessmentType: 'mcq',
         questions: [
           {
             id: 'q-1',
@@ -235,60 +292,6 @@ export const mockExams: ExamDefinition[] = [
             question: 'The median of 4, 9, 3, 7, 12 is:',
             options: ['7', '8', '9', '6'],
             correctAnswer: 0,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'ca-inter-quick-drill',
-    title: 'CA Inter — Quick Drill (45 min)',
-    durationMinutes: 45,
-    sections: [
-      {
-        id: 'tax',
-        name: 'Indirect Tax',
-        questions: [
-          {
-            id: 'gst-1',
-            question:
-              'IGST is levied on which nature of supply under GST?',
-            options: [
-              'Intra-state supply',
-              'Inter-state supply',
-              'Exempt supply only',
-              'Non-taxable supply',
-            ],
-            correctAnswer: 1,
-          },
-          {
-            id: 'gst-2',
-            question: 'Input tax credit is generally available on:',
-            options: [
-              'Personal purchases',
-              'Goods used for furtherance of business',
-              'Blocked credit items under law',
-              'Exempt supplies only',
-            ],
-            correctAnswer: 1,
-          },
-        ],
-      },
-      {
-        id: 'audit',
-        name: 'Auditing',
-        questions: [
-          {
-            id: 'aud-1',
-            question:
-              'The primary objective of an audit of financial statements is to:',
-            options: [
-              'Detect all fraud',
-              'Provide reasonable assurance',
-              'Prepare financial statements',
-              'Guarantee future performance',
-            ],
-            correctAnswer: 1,
           },
         ],
       },

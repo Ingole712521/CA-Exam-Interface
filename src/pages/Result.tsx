@@ -1,9 +1,17 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AppHeader } from '../components/layout/AppHeader'
-import { loadLastResult } from '../utils/examSessionStorage'
+import {
+  isResultPaidForExam,
+  loadLastResult,
+  setResultPaidForExam,
+} from '../utils/examSessionStorage'
 
 export default function Result() {
   const result = loadLastResult()
+  const [paid, setPaid] = useState(
+    () => result != null && isResultPaidForExam(result.examId),
+  )
 
   if (!result) {
     return (
@@ -27,6 +35,70 @@ export default function Result() {
     )
   }
 
+  const gradable = result.gradableQuestionCount
+  const uploads = result.uploadQuestionCount
+  const examId = result.examId
+
+  function handleUnlockDemo() {
+    setResultPaidForExam(examId)
+    setPaid(true)
+  }
+
+  if (!paid) {
+    return (
+      <div className="min-h-svh bg-slate-50 dark:bg-slate-950">
+        <AppHeader />
+        <main className="mx-auto max-w-2xl px-4 py-10">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+            Test submitted
+          </h1>
+          <p className="mt-1 text-slate-500 dark:text-slate-400">{result.examTitle}</p>
+
+          <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm leading-relaxed text-amber-950 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-100">
+            <p className="font-medium">What happens next</p>
+            <ul className="mt-3 list-disc space-y-2 pl-5">
+              <li>
+                Subjective answers (including uploaded images) are reviewed by the
+                back-end administrator. Your final score is released only after that
+                evaluation.
+              </li>
+              <li>
+                In this product model, you unlock performance details for a given test
+                after payment of that test&apos;s fee.
+              </li>
+              {gradable > 0 ? (
+                <li>
+                  Multiple-choice items can be scored automatically; those numbers are
+                  still hidden here until you unlock results for this test.
+                </li>
+              ) : null}
+            </ul>
+          </div>
+
+          <div className="mt-8">
+            <button
+              type="button"
+              onClick={handleUnlockDemo}
+              className="w-full rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 sm:w-auto dark:bg-emerald-500 dark:hover:bg-emerald-600"
+            >
+              Simulate payment — unlock results (demo)
+            </button>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              Local preview only: stores consent in this browser; no real payment.
+            </p>
+          </div>
+
+          <Link
+            to="/dashboard"
+            className="mt-10 inline-block text-sm font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+          >
+            Back to dashboard
+          </Link>
+        </main>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-svh bg-slate-50 dark:bg-slate-950">
       <AppHeader />
@@ -36,16 +108,24 @@ export default function Result() {
         </h1>
         <p className="mt-1 text-slate-500 dark:text-slate-400">{result.examTitle}</p>
 
+        {uploads > 0 ? (
+          <p className="mt-4 rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+            You have {uploads} subjective upload{uploads === 1 ? '' : 's'} in this
+            attempt. Marks for those items will appear after the administrator finishes
+            evaluation; the figures below reflect auto-graded (MCQ) items only.
+          </p>
+        ) : null}
+
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
             <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-              Score
+              Auto-graded score (MCQ)
             </p>
             <p className="mt-2 text-4xl font-bold text-emerald-600 dark:text-emerald-400">
-              {result.correct}/{result.totalQuestions}
+              {result.correct}/{gradable || result.totalQuestions}
             </p>
             <p className="mt-1 text-2xl font-semibold text-slate-800 dark:text-slate-200">
-              {result.percentage}%
+              {gradable > 0 ? `${result.percentage}%` : '—'}
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -66,18 +146,26 @@ export default function Result() {
                 </span>
               </li>
               <li className="flex justify-between text-slate-700 dark:text-slate-300">
-                <span>Unanswered</span>
+                <span>Unanswered (MCQ)</span>
                 <span className="font-semibold text-slate-500">
                   {result.unanswered}
                 </span>
               </li>
+              {uploads > 0 ? (
+                <li className="flex justify-between text-slate-700 dark:text-slate-300">
+                  <span>Subjective uploads (pending)</span>
+                  <span className="font-semibold text-amber-700 dark:text-amber-400">
+                    {uploads}
+                  </span>
+                </li>
+              ) : null}
             </ul>
           </div>
         </div>
 
         <section className="mt-10">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-            Section-wise
+            Section-wise (auto-graded)
           </h2>
           <ul className="mt-4 space-y-3">
             {result.sections.map((s) => (

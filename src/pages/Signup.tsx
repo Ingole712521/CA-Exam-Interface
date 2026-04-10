@@ -31,7 +31,9 @@ export default function Signup() {
           Create account
         </h1>
         <p className="mb-6 text-sm text-slate-500 dark:text-slate-400">
-          Details are stored only in this browser (localStorage).
+          In the full system, registration is approved by an administrator before you
+          can sign in. This demo stores your details only in this browser
+          (localStorage).
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
