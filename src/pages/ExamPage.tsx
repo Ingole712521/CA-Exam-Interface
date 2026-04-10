@@ -8,6 +8,7 @@ import { QuestionCard } from '../components/exam/QuestionCard'
 import { ExamRightPanel } from '../components/exam/ExamRightPanel'
 import { ExamBottomControls } from '../components/exam/ExamBottomControls'
 import { ExamTabOverlays } from '../components/exam/ExamTabOverlays'
+import { SubmitExamConfirmModal } from '../components/exam/SubmitExamConfirmModal'
 
 function ExamLayout() {
   const {
@@ -32,6 +33,7 @@ function ExamLayout() {
 
   const rootRef = useRef<HTMLDivElement>(null)
   const [fs, setFs] = useState(false)
+  const [submitModalOpen, setSubmitModalOpen] = useState(false)
 
   useEffect(() => {
     const el = rootRef.current
@@ -106,6 +108,16 @@ function ExamLayout() {
       className="flex min-h-svh flex-col bg-slate-100 dark:bg-slate-950"
     >
       <ExamTabOverlays />
+      <SubmitExamConfirmModal
+        open={submitModalOpen}
+        onCancel={() => setSubmitModalOpen(false)}
+        onConfirm={() => {
+          setSubmitModalOpen(false)
+          submitExam()
+        }}
+        answeredCount={answeredCount}
+        totalQuestions={total}
+      />
       <ExamTopBar
         examTitle={session.examTitle}
         sectionName={currentSectionName || meta?.sectionName || '—'}
@@ -167,15 +179,7 @@ function ExamLayout() {
             markedForReview={!!resp?.markedForReview}
             onToggleMark={toggleMarkForReview}
             onClear={clearResponse}
-            onSubmit={() => {
-              if (
-                window.confirm(
-                  'Submit the exam? You cannot change answers after submitting.',
-                )
-              ) {
-                submitExam()
-              }
-            }}
+            onSubmit={() => setSubmitModalOpen(true)}
           />
         </aside>
       </div>
