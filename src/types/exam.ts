@@ -78,29 +78,20 @@ export interface RawQuestion {
    * When present, top-level `options` / `correctAnswer` are not used.
    */
   parts?: RawQuestionPart[]
-  /**
-   * For single-slot MCQs (no `parts`).
-   * For upload-type questions, keep this empty.
-   */
+  
   options?: string[]
-  /**
-   * 0-based index into `options` before shuffle (MCQs only).
-   * For upload-type questions, this value is ignored.
-   */
+  
   correctAnswer?: number
-  /** Presentation hint for badge and layout. */
   format?: QuestionFormat
   image?: QuestionImageSpec
   table?: QuestionTableSpec
 }
 
-/** Foundation syllabus: Accounts & Law are subjective papers; Economics & Mathematics are MCQ. */
 export type SectionAssessmentType = 'subjective' | 'mcq'
 
 export interface RawSection {
   id: string
   name: string
-  /** How this subject is assessed per CA Foundation overview (UI copy). */
   assessmentType?: SectionAssessmentType
   questions: RawQuestion[]
 }
@@ -111,14 +102,11 @@ export interface ExamDefinition {
   id: string
   title: string
   durationMinutes: number
-  /** CA programme level: Foundation → Intermediate → Final. */
   level: CaLevel
-  /** Per-test fee label shown to students (each test has its own fee). */
   feeDisplay: string
   sections: RawSection[]
 }
 
-/** Answer state for one internal part of a compound question. */
 export interface PartAnswerState {
   selectedAnswer: number | null
   uploadedAnswerImage: string | null
@@ -127,17 +115,12 @@ export interface PartAnswerState {
 
 export interface QuestionResponse {
   selectedAnswer: number | null
-  /**
-   * Data URL for uploaded answer image (upload-type questions).
-   * Stored in localStorage; keep uploads small to avoid quota issues.
-   */
+ 
   uploadedAnswerImage: string | null
   uploadedAnswerFileName: string | null
   visited: boolean
   markedForReview: boolean
-  /** Present when this navigator slot is a compound (multi-part) question. */
   compound?: {
-    /** For each OR group, which part id the student is answering. */
     orGroupChoice: Record<string, string | null>
     partAnswers: Record<string, PartAnswerState>
   }
@@ -179,7 +162,6 @@ export interface ExamSessionState {
   questionMeta: Record<string, QuestionMeta>
   optionsByQuestion: Record<string, string[]>
   correctIndexByQuestion: Record<string, number>
-  /** Shuffled MCQ options per internal part (compound questions only). */
   optionsByPart: Record<string, Record<string, string[]>>
   correctIndexByPart: Record<string, Record<string, number>>
   responses: Record<string, QuestionResponse>
@@ -197,14 +179,11 @@ export interface ExamResult {
   examId: string
   examTitle: string
   totalQuestions: number
-  /** Questions auto-graded in the client (excludes upload / subjective file answers). */
   gradableQuestionCount: number
-  /** Upload-type answers pending back-end admin evaluation. */
   uploadQuestionCount: number
   correct: number
   incorrect: number
   unanswered: number
-  /** Share of auto-graded items answered correctly. */
   percentage: number
   sections: SectionScore[]
   completedAt: number

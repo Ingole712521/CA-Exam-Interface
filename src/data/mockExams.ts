@@ -542,6 +542,65 @@ export const mockExams: ExamDefinition[] = [
             options: [],
             correctAnswer: 0,
           },
+          {
+            id: 'acc-dep-rtp-mcq-1',
+            format: 'theoretical',
+            question:
+              'Under Straight Line Method, annual depreciation is generally computed as:',
+            options: [
+              '(Cost - Residual value) / Useful life',
+              'Opening WDV x Rate',
+              'Cost x (Remaining life / Sum of years digits)',
+              'Actual machine hours x Closing WDV',
+            ],
+            correctAnswer: 0,
+          },
+          {
+            id: 'acc-dep-rtp-mcq-2',
+            format: 'case_study',
+            passage:
+              'A machine costing ₹2,00,000 has residual value ₹20,000 and useful life 9 years.',
+            question:
+              'Annual depreciation under SLM (ignoring partial periods) will be:',
+            options: ['₹18,000', '₹20,000', '₹22,500', '₹25,000'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'acc-inv-rtp-mcq-1',
+            format: 'theoretical',
+            question:
+              'As per AS-2, which of the following is generally excluded from cost of inventories?',
+            options: [
+              'Costs of conversion',
+              'Abnormal wastage',
+              'Other costs to bring inventories to present location and condition',
+              'Purchase-related freight inward',
+            ],
+            correctAnswer: 1,
+          },
+          {
+            id: 'acc-inv-rtp-mcq-2',
+            format: 'theoretical',
+            question:
+              'In periodic inventory system, closing inventory is primarily determined by:',
+            options: [
+              'Continuous book update only',
+              'Management estimate without verification',
+              'Actual physical count at period-end',
+              'Gross profit ratio only',
+            ],
+            correctAnswer: 2,
+          },
+          {
+            id: 'acc-dep-rtp-upload-2',
+            format: 'upload',
+            passage:
+              'RTP-style depreciation question:\n\nA purchased machinery on 01.01.2021 for ₹1,94,000 and spent ₹6,000 on erection. On 01.07.2021 additional machinery ₹1,00,000 was purchased. On 01.01.2023, machinery purchased on 01.01.2021 was sold for ₹1,00,000. On 01.07.2023, a new machinery was purchased for ₹1,50,000. Depreciation is provided @10% p.a. on original cost upto 2023; in 2024 method changed to WDV @15% p.a.',
+            question:
+              'Prepare Machinery Account for calendar years 2021 to 2024 (upload clear working).',
+            options: [],
+            correctAnswer: 0,
+          },
         ],
       },
       {
@@ -688,6 +747,118 @@ export const mockExams: ExamDefinition[] = [
             ],
             correctAnswer: 1,
           },
+          {
+            id: 'inter-aa-3',
+            format: 'table',
+            question:
+              'From the trial balance extract below, what is the total of amounts on the debit side (₹)?',
+            table: {
+              caption: 'Trial balance extract (₹)',
+              headers: ['Account', 'Debit (₹)', 'Credit (₹)'],
+              rows: [
+                ['Cash at bank', '1,00,000', '—'],
+                ['Trade receivables', '4,35,000', '—'],
+                ['Machinery (cost)', '5,00,000', '—'],
+                ['Purchases', '3,00,000', '—'],
+                ['Accumulated depreciation', '—', '2,00,000'],
+                ['Trade payables', '—', '1,50,000'],
+                ['Equity share capital', '—', '5,00,000'],
+                ['Revenue from operations', '—', '4,85,000'],
+              ],
+            },
+            options: ['12,35,000', '13,35,000', '14,35,000', '15,35,000'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-aa-4',
+            format: 'table',
+            question:
+              'From the Receipts and Payments account below, what is the total of the Receipts column (₹)?',
+            table: {
+              layout: 'receipts_payments',
+              caption: 'Receipts and Payments (illustrative)',
+              receipts: [
+                { particular: 'Capital introduced', amount: '5,00,000' },
+                { particular: 'Loan received', amount: '8,00,000' },
+                { particular: 'Cash sales', amount: '12,40,000' },
+                { particular: 'Collection from debtors', amount: '6,60,000' },
+              ],
+              payments: [
+                { particular: 'Purchase of machinery', amount: '9,00,000' },
+                { particular: 'Payment to creditors', amount: '11,20,000' },
+                { particular: 'Rent and salaries', amount: '4,80,000' },
+                { particular: 'Balance c/d (bank)', amount: '7,00,000' },
+              ],
+              receiptsTotal: '32,00,000',
+              paymentsTotal: '32,00,000',
+            },
+            options: ['₹31,00,000', '₹32,00,000', '₹33,00,000', '₹34,00,000'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-aa-5',
+            question: 'A debenture issued at discount is shown initially at:',
+            options: ['Nominal value', 'Issue proceeds (net carrying amount)', 'Redemption value', 'Nil'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-aa-6',
+            format: 'theoretical',
+            question: 'Cash flow from purchase of plant appears under:',
+            options: ['Operating activities', 'Investing activities', 'Financing activities', 'Extraordinary activities'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-aa-7',
+            format: 'upload',
+            passage:
+              'Prepare a concise note with format on treatment of goodwill on acquisition and on impairment testing at year end.',
+            question: 'Upload your structured answer with working notes.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-aa-8',
+            format: 'upload',
+            passage:
+              'A parent acquires 75% stake in a subsidiary. Given net identifiable assets and consideration, prepare a short consolidation working.',
+            question: 'Upload the goodwill and NCI computation.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-aa-9',
+            question: 'Under AS 10, a change in depreciation method is treated as:',
+            options: ['Change in estimate', 'Prior period item only', 'Change in accounting policy with retrospective restatement always', 'Extraordinary item'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-aa-10',
+            format: 'upload',
+            passage:
+              'Trial balance extract includes machinery, provision for depreciation and disposal details.',
+            question: 'Prepare machinery account and provision for depreciation account.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-aa-11',
+            format: 'case_study',
+            passage:
+              'A machine (cost ₹5,00,000) is sold for ₹2,20,000; accumulated depreciation is ₹2,40,000.',
+            question: 'Result on disposal is:',
+            options: ['Profit ₹40,000', 'Loss ₹40,000', 'No gain no loss', 'Profit ₹20,000'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-aa-12',
+            format: 'upload',
+            passage:
+              'Draft final account extracts for depreciation, bad debts and provision adjustments from given balances.',
+            question: 'Upload your final account presentation.',
+            options: [],
+            correctAnswer: 0,
+          },
         ],
       },
       {
@@ -719,6 +890,101 @@ export const mockExams: ExamDefinition[] = [
               'Board resolution only, without members’ vote',
             ],
             correctAnswer: 1,
+          },
+          {
+            id: 'inter-law-3',
+            format: 'table',
+            question:
+              'At an extraordinary general meeting, 320 members were present (eligible to vote). Votes cast on a special resolution: 250 in favour, 70 against. Has the special resolution passed?',
+            table: {
+              caption: 'EGM voting summary',
+              headers: ['Particulars', 'Number'],
+              rows: [
+                ['Members present and voting', '320'],
+                ['Votes in favour', '250'],
+                ['Votes against', '70'],
+              ],
+            },
+            options: [
+              'No — less than three-fourths of members present',
+              'Yes — not less than three-fourths of votes cast are in favour',
+              'No — quorum was not achieved',
+              'Invalid — abstentions must be counted as against',
+            ],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-law-4',
+            question: 'Doctrine of indoor management protects:',
+            options: ['Directors only', 'Outsiders dealing in good faith', 'Auditors only', 'Promoters only'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-law-5',
+            format: 'theoretical',
+            question: 'Minimum number of directors in a public company is:',
+            options: ['1', '2', '3', '5'],
+            correctAnswer: 2,
+          },
+          {
+            id: 'inter-law-6',
+            format: 'case_study',
+            passage:
+              'A notice period for a board meeting was not complied with for one director, but urgent business was transacted.',
+            question: 'Most appropriate legal view is:',
+            options: ['Meeting automatically valid', 'Meeting always void', 'Validity depends on ratification/urgency and compliance provisions', 'Only chairman can validate'],
+            correctAnswer: 2,
+          },
+          {
+            id: 'inter-law-7',
+            format: 'upload',
+            passage:
+              'Explain distinctions between ordinary resolution and special resolution with practical examples.',
+            question: 'Upload your written answer.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-law-8',
+            format: 'upload',
+            passage:
+              'Prepare a short note on oppression and mismanagement remedies under company law.',
+            question: 'Upload your answer in point format.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-law-9',
+            question: 'Quorum in a general meeting ensures:',
+            options: ['Presence of creditors', 'Valid minimum member participation', 'Approval by regulators', 'Attendance of all directors'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-law-10',
+            format: 'case_study',
+            passage:
+              'Articles restrict transfer of shares in a private company; a member seeks transfer to outsider.',
+            question: 'The company may refuse transfer if:',
+            options: ['No reason required in any case', 'Articles permit and due process is followed', 'Member is minority holder', 'Transferor is promoter'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-law-11',
+            format: 'upload',
+            passage:
+              'Draft board resolution format for issue of shares on rights basis.',
+            question: 'Upload the board resolution draft.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-law-12',
+            format: 'upload',
+            passage:
+              'State short notes on doctrine of ultra vires and memorandum clauses.',
+            question: 'Upload concise legal notes.',
+            options: [],
+            correctAnswer: 0,
           },
         ],
       },
@@ -752,6 +1018,96 @@ export const mockExams: ExamDefinition[] = [
             ],
             correctAnswer: 1,
           },
+          {
+            id: 'inter-cost-3',
+            format: 'table',
+            question:
+              'Using the job cost data below, what is the prime cost for Job Z?',
+            table: {
+              caption: 'Job Z — cost elements (₹)',
+              headers: ['Element', 'Amount (₹)'],
+              rows: [
+                ['Direct material', '1,84,000'],
+                ['Direct labour', '96,000'],
+                ['Factory overheads (absorbed)', '72,000'],
+                ['Administrative overheads (allocated)', '48,000'],
+              ],
+            },
+            options: ['₹2,80,000', '₹3,52,000', '₹4,00,000', '₹2,20,000'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-cost-4',
+            format: 'case_study',
+            passage:
+              'Selling price per unit ₹100, variable cost ₹60, fixed cost ₹2,00,000.',
+            question: 'Contribution per unit is:',
+            options: ['₹20', '₹30', '₹40', '₹60'],
+            correctAnswer: 2,
+          },
+          {
+            id: 'inter-cost-5',
+            question: 'Break-even point in units is:',
+            options: ['Fixed cost / Contribution per unit', 'Sales / PV ratio', 'Variable cost / sales', 'Contribution / fixed cost'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-cost-6',
+            format: 'upload',
+            passage:
+              'Given material, labour and overhead data for a job, prepare a cost sheet and determine quotation price.',
+            question: 'Upload full cost sheet working.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-cost-7',
+            format: 'upload',
+            passage:
+              'Process costing data includes normal loss, scrap value and transfer to next process.',
+            question: 'Prepare process account and equivalent units working.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-cost-8',
+            question: 'In standard costing, material price variance is:',
+            options: ['(SP - AP) x AQ', '(SQ - AQ) x SP', '(SP - AP) x SQ', '(AQ - SQ) x AP'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-cost-9',
+            format: 'case_study',
+            passage:
+              'Budgeted output is 10,000 units; actual output is 9,000 units with fixed overhead unchanged.',
+            question: 'Most likely interpretation is:',
+            options: ['Volume variance may be adverse', 'Efficiency variance always favourable', 'Fixed overhead cannot vary', 'No variance arises'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-cost-10',
+            format: 'upload',
+            passage:
+              'Prepare reconciliation statement between costing profit and financial profit from given data.',
+            question: 'Upload your reconciliation statement.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-cost-11',
+            question: 'Economic order quantity (EOQ) aims to minimize:',
+            options: ['Carriage inward only', 'Ordering and carrying costs together', 'Purchase price only', 'Stock-out cost only'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-cost-12',
+            format: 'upload',
+            passage:
+              'Data given for CVP analysis: sales mix, variable cost ratio and fixed cost.',
+            question: 'Compute BEP, margin of safety and required sales for target profit.',
+            options: [],
+            correctAnswer: 0,
+          },
         ],
       },
       {
@@ -783,6 +1139,95 @@ export const mockExams: ExamDefinition[] = [
               'Company law compliance only',
             ],
             correctAnswer: 1,
+          },
+          {
+            id: 'inter-tax-3',
+            format: 'table',
+            question:
+              'From the GST summary below (all figures ₹, same tax rate), net GST payable for the period is:',
+            table: {
+              caption: 'GST summary (illustrative)',
+              headers: ['Particulars', 'Taxable value', 'GST @ 18%'],
+              rows: [
+                ['Outward taxable supplies', '10,00,000', '1,80,000'],
+                ['Inward supplies (ITC available)', '6,00,000', '1,08,000'],
+              ],
+            },
+            options: ['₹72,000', '₹1,08,000', '₹1,80,000', '₹2,88,000'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-tax-4',
+            format: 'theoretical',
+            question: 'TDS stands for:',
+            options: ['Tax deducted at source', 'Tax due at settlement', 'Transfer duty at source', 'Total deduction statement'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-tax-5',
+            format: 'case_study',
+            passage:
+              'A registered supplier makes taxable outward supply and uses inputs for business purposes.',
+            question: 'ITC can be claimed subject to:',
+            options: ['No invoice needed', 'Satisfaction of statutory conditions and matching requirements', 'Only cash payment of tax', 'Turnover below threshold'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-tax-6',
+            format: 'upload',
+            passage:
+              'Compute total income from salary, house property and other sources from given particulars.',
+            question: 'Upload your computation of total income.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-tax-7',
+            format: 'upload',
+            passage:
+              'Given purchase/sales data with GST rates and ITC restrictions, compute net GST payable.',
+            question: 'Upload GST output/input set-off working.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-tax-8',
+            question: 'Under GST, place of supply helps determine:',
+            options: ['ITR due date', 'Whether supply is intra-state or inter-state', 'Book profit', 'Depreciation rate'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-tax-9',
+            format: 'case_study',
+            passage:
+              'An individual stays in India for 190 days during PY and satisfies additional conditions.',
+            question: 'Residential status is generally:',
+            options: ['Non-resident', 'Resident', 'Always RNOR', 'Always deemed resident regardless facts'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-tax-10',
+            format: 'upload',
+            passage:
+              'Prepare computation of capital gains and taxable income from transfer of long-term asset.',
+            question: 'Upload full income-tax computation.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'inter-tax-11',
+            question: 'Reverse charge under GST means tax is paid by:',
+            options: ['Supplier always', 'Recipient in notified cases', 'E-commerce operator only', 'Government treasury only'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'inter-tax-12',
+            format: 'upload',
+            passage:
+              'Prepare brief note on deduction provisions and rebate applicability for a resident individual.',
+            question: 'Upload your answer with section-wise breakup.',
+            options: [],
+            correctAnswer: 0,
           },
         ],
       },
@@ -825,6 +1270,113 @@ export const mockExams: ExamDefinition[] = [
             ],
             correctAnswer: 1,
           },
+          {
+            id: 'final-fr-3',
+            format: 'table',
+            question:
+              'Entity revenue for the year is ₹50,00,000. Using the segment table below, how many reportable segments exceed 10% of total revenue?',
+            table: {
+              caption: 'Segment revenue (₹)',
+              headers: ['Segment', 'Revenue'],
+              rows: [
+                ['A', '18,00,000'],
+                ['B', '7,00,000'],
+                ['C', '5,50,000'],
+                ['D', '19,50,000'],
+              ],
+            },
+            options: ['1', '2', '3', '4'],
+            correctAnswer: 3,
+          },
+          {
+            id: 'final-fr-4',
+            format: 'table',
+            question:
+              'From the Receipts and Payments account below, what is the total of the Payments column (₹)?',
+            table: {
+              layout: 'receipts_payments',
+              caption: 'Not-for-profit — Receipts and Payments (illustrative)',
+              receipts: [
+                { particular: 'Opening cash & bank', amount: '2,40,000' },
+                { particular: 'Subscriptions received', amount: '18,60,000' },
+                { particular: 'Donations (general)', amount: '4,20,000' },
+                { particular: 'Interest on investments', amount: '1,80,000' },
+              ],
+              payments: [
+                { particular: 'Salaries and stipends', amount: '9,20,000' },
+                { particular: 'Programme expenses', amount: '11,40,000' },
+                { particular: 'Administrative overheads', amount: '3,60,000' },
+                { particular: 'Closing cash & bank', amount: '2,80,000' },
+              ],
+              receiptsTotal: '27,00,000',
+              paymentsTotal: '27,00,000',
+            },
+            options: ['₹25,00,000', '₹26,00,000', '₹27,00,000', '₹28,00,000'],
+            correctAnswer: 2,
+          },
+          {
+            id: 'final-fr-5',
+            question: 'Deferred tax asset is recognized when:',
+            options: ['It is probable that taxable profits will be available', 'There is always timing difference', 'The auditor demands it', 'Entity reports loss'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-fr-6',
+            format: 'upload',
+            passage:
+              'Given data for lease liability and right-of-use asset, prepare first-year lease accounting entries and schedule.',
+            question: 'Upload lease accounting working.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-fr-7',
+            format: 'upload',
+            passage:
+              'Prepare consolidated statement extract with inter-company unrealized profit adjustment.',
+            question: 'Upload consolidation working notes.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-fr-8',
+            question: 'In statement of cash flows, interest paid is generally classified under:',
+            options: ['Operating/financing as per standard policy', 'Investing only', 'Always extraordinary', 'Never shown'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-fr-9',
+            format: 'case_study',
+            passage:
+              'An indicator suggests impairment of a CGU containing goodwill.',
+            question: 'Recoverable amount is higher of:',
+            options: ['Fair value less costs of disposal and value in use', 'Cost and carrying amount', 'Value in use and historical cost', 'NRV and replacement cost'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-fr-10',
+            format: 'upload',
+            passage:
+              'Draft disclosure notes for provisions, contingent liabilities and contingent assets with suitable classification.',
+            question: 'Upload disclosure draft.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-fr-11',
+            question: 'Earnings per share is computed as profit attributable to equity holders divided by:',
+            options: ['Closing shares only', 'Weighted average equity shares', 'Authorized shares', 'Issued preference shares'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-fr-12',
+            format: 'upload',
+            passage:
+              'Prepare segment reporting extract from given operating segment data.',
+            question: 'Upload segment note working.',
+            options: [],
+            correctAnswer: 0,
+          },
         ],
       },
       {
@@ -856,6 +1408,95 @@ export const mockExams: ExamDefinition[] = [
               'Measure operating leverage only',
             ],
             correctAnswer: 1,
+          },
+          {
+            id: 'final-sfm-3',
+            format: 'table',
+            question:
+              'Using the probability distribution below, the expected return on the project is closest to:',
+            table: {
+              caption: 'Scenario returns',
+              headers: ['Scenario', 'Probability', 'Return (%)'],
+              rows: [
+                ['Strong', '0.25', '22'],
+                ['Base', '0.55', '14'],
+                ['Weak', '0.20', '4'],
+              ],
+            },
+            options: ['12.0%', '13.5%', '14.0%', '15.5%'],
+            correctAnswer: 2,
+          },
+          {
+            id: 'final-sfm-4',
+            format: 'case_study',
+            passage:
+              'Risk-free rate 7%, market return 13%, beta 1.2.',
+            question: 'Expected return under CAPM is:',
+            options: ['12.2%', '13.2%', '14.2%', '15.0%'],
+            correctAnswer: 2,
+          },
+          {
+            id: 'final-sfm-5',
+            question: 'Duration in bond analysis measures sensitivity to:',
+            options: ['Credit rating changes only', 'Interest rate changes', 'Tax rate changes', 'Exchange control'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-sfm-6',
+            format: 'upload',
+            passage:
+              'Given project cash flows and discount rate, compute NPV and IRR with decision comment.',
+            question: 'Upload capital budgeting working.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-sfm-7',
+            format: 'upload',
+            passage:
+              'Evaluate currency hedge using forward contract versus money market hedge from given forex data.',
+            question: 'Upload hedge comparison and recommendation.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-sfm-8',
+            question: 'Operating leverage is high when:',
+            options: ['Variable cost dominates', 'Fixed cost is relatively high', 'No contribution exists', 'Sales are zero'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-sfm-9',
+            format: 'case_study',
+            passage:
+              'A portfolio manager wants to reduce systematic risk without liquidating all holdings.',
+            question: 'A practical approach is:',
+            options: ['Use index futures hedge', 'Buy only penny stocks', 'Increase unsystematic risk', 'Ignore beta'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-sfm-10',
+            format: 'upload',
+            passage:
+              'Compute EVA using NOPAT, capital employed and weighted average cost of capital.',
+            question: 'Upload EVA computation and interpretation.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-sfm-11',
+            question: 'In dividend valuation model (constant growth), value is:',
+            options: ['D1 / (ke - g)', 'D0 / ke', 'EPS / PE ratio', 'D1 x (ke + g)'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-sfm-12',
+            format: 'upload',
+            passage:
+              'Prepare comparative statement on lease versus buy decision using after-tax cash flows.',
+            question: 'Upload lease-buy analysis.',
+            options: [],
+            correctAnswer: 0,
           },
         ],
       },
@@ -889,6 +1530,98 @@ export const mockExams: ExamDefinition[] = [
             ],
             correctAnswer: 1,
           },
+          {
+            id: 'final-audit-3',
+            format: 'table',
+            question:
+              'Audit planning sets overall materiality at 1% of total assets. From the extract below, overall materiality is approximately:',
+            table: {
+              caption: 'Balance sheet extract (₹ lakhs)',
+              headers: ['Particulars', 'Amount'],
+              rows: [
+                ['Property, plant & equipment', '4,200'],
+                ['Inventories', '980'],
+                ['Trade receivables', '620'],
+                ['Cash and bank', '200'],
+                ['Total assets', '6,000'],
+              ],
+            },
+            options: ['₹40 lakhs', '₹50 lakhs', '₹60 lakhs', '₹70 lakhs'],
+            correctAnswer: 2,
+          },
+          {
+            id: 'final-audit-4',
+            format: 'theoretical',
+            question: 'Test of controls primarily provides evidence about:',
+            options: ['Operating effectiveness of controls', 'Final account preparation only', 'Profit appropriation', 'Tax computation only'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-audit-5',
+            format: 'case_study',
+            passage:
+              'Inventory counts are held at year-end at multiple locations with limited auditor presence.',
+            question: 'Most suitable response is:',
+            options: ['Ignore inventory', 'Design alternative audit procedures and observe selected counts', 'Issue adverse opinion immediately', 'Rely only on management certification'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-audit-6',
+            format: 'upload',
+            passage:
+              'Draft an audit program for revenue recognition including controls and substantive procedures.',
+            question: 'Upload your audit program.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-audit-7',
+            format: 'upload',
+            passage:
+              'Prepare key points for CARO reporting areas from a manufacturing company case.',
+            question: 'Upload CARO checklist style answer.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-audit-8',
+            question: 'Professional skepticism means auditor should:',
+            options: ['Assume management dishonesty always', 'Maintain questioning mind and critical assessment', 'Accept all explanations', 'Avoid corroborative evidence'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-audit-9',
+            format: 'case_study',
+            passage:
+              'Subsequent events after reporting period indicate material litigation loss not adjusted/disclosed.',
+            question: 'Auditor should generally:',
+            options: ['Ignore if after year-end', 'Require adjustment/disclosure and modify report if not done', 'Depend only on legal letter date', 'Resign in all cases'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-audit-10',
+            format: 'upload',
+            passage:
+              'Prepare a specimen qualified opinion paragraph for limitation of scope in inventory verification.',
+            question: 'Upload draft opinion wording.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-audit-11',
+            question: 'Audit evidence hierarchy generally considers external evidence as:',
+            options: ['Less reliable than internal always', 'More reliable than internal evidence', 'Equivalent in all cases', 'Irrelevant for reporting'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-audit-12',
+            format: 'upload',
+            passage:
+              'Write short note on ethical threats and safeguards for assurance engagements.',
+            question: 'Upload your ethics note.',
+            options: [],
+            correctAnswer: 0,
+          },
         ],
       },
       {
@@ -920,6 +1653,96 @@ export const mockExams: ExamDefinition[] = [
               'Replace domestic income-tax law entirely',
             ],
             correctAnswer: 1,
+          },
+          {
+            id: 'final-dt-3',
+            format: 'table',
+            question:
+              'From the heads below (all amounts ₹), gross total income before Chapter VI-A deductions is:',
+            table: {
+              caption: 'Income heads (illustrative)',
+              headers: ['Head', 'Amount (₹)'],
+              rows: [
+                ['Income from salary', '18,50,000'],
+                ['Income from house property', '2,40,000'],
+                ['Income from other sources', '1,10,000'],
+                ['Agricultural income (exempt)', '3,00,000'],
+              ],
+            },
+            options: ['₹22,00,000', '₹25,00,000', '₹19,90,000', '₹21,60,000'],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-dt-4',
+            format: 'case_study',
+            passage:
+              'A resident taxpayer earns income in India and in treaty country with tax deducted there.',
+            question: 'Relief from double taxation is generally available through:',
+            options: ['Ignoring foreign income', 'Tax credit/exemption as per treaty and domestic law', 'Pay tax twice without relief', 'Only unilateral waiver by employer'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-dt-5',
+            question: 'PE (Permanent Establishment) is relevant in international tax for:',
+            options: ['Customs duty valuation', 'Allocation of taxing rights for business profits', 'GST composition levy', 'TDS on salary only'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-dt-6',
+            format: 'upload',
+            passage:
+              'Compute total income and tax liability of a corporate assessee including brought-forward losses.',
+            question: 'Upload complete corporate tax computation.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-dt-7',
+            format: 'upload',
+            passage:
+              'Given associated enterprise transactions, prepare transfer pricing adjustment working under CUP/TNMM assumptions.',
+            question: 'Upload TP computation and conclusion.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-dt-8',
+            question: 'Advance ruling mechanism is mainly meant for:',
+            options: ['Final appellate order', 'Clarity on tax positions in specified cases', 'Penalty waiver only', 'Reopening all assessments'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-dt-9',
+            format: 'case_study',
+            passage:
+              'A non-resident earns royalty from India under treaty with concessional rate provisions.',
+            question: 'Applicable tax rate should generally be:',
+            options: ['Higher of treaty and domestic rates always', 'Lower of treaty and domestic rate, subject to conditions', 'Zero in all royalty cases', 'Rate decided by payer'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-dt-10',
+            format: 'upload',
+            passage:
+              'Prepare brief note on GAAR applicability and key safeguards from a practical scenario.',
+            question: 'Upload your GAAR analysis note.',
+            options: [],
+            correctAnswer: 0,
+          },
+          {
+            id: 'final-dt-11',
+            question: 'Equalisation levy is targeted at:',
+            options: ['Traditional manufacturing sales', 'Specified digital economy transactions', 'Agricultural income', 'Capital gains only'],
+            correctAnswer: 1,
+          },
+          {
+            id: 'final-dt-12',
+            format: 'upload',
+            passage:
+              'From given data, compute withholding tax obligations on payments to residents and non-residents.',
+            question: 'Upload TDS/TCS computation sheet.',
+            options: [],
+            correctAnswer: 0,
           },
         ],
       },
