@@ -6,16 +6,27 @@ const USER_KEY = 'ca_user'
 const THEME_KEY = 'ca_theme'
 const LAST_RESULT_KEY = 'ca_last_result'
 const PAID_RESULT_PREFIX = 'ca_result_paid_'
+const PAID_TXN_PREFIX = 'ca_result_txn_'
 
 export function sessionStorageKey(examId: string): string {
   return `${PREFIX}${examId}${SUFFIX}`
+}
+
+function migrateExamSession(parsed: ExamSessionState): ExamSessionState {
+  if (!parsed.optionsByPart) parsed.optionsByPart = {}
+  if (!parsed.correctIndexByPart) parsed.correctIndexByPart = {}
+  for (const qid of parsed.questionIds) {
+    if (!parsed.optionsByPart[qid]) parsed.optionsByPart[qid] = {}
+    if (!parsed.correctIndexByPart[qid]) parsed.correctIndexByPart[qid] = {}
+  }
+  return parsed
 }
 
 export function loadExamSession(examId: string): ExamSessionState | null {
   try {
     const raw = localStorage.getItem(sessionStorageKey(examId))
     if (!raw) return null
-    return JSON.parse(raw) as ExamSessionState
+    return migrateExamSession(JSON.parse(raw) as ExamSessionState)
   } catch {
     return null
   }
@@ -90,8 +101,15 @@ export function isResultPaidForExam(examId: string): boolean {
 }
 
 /** Demo stand-in for payment: unlocks viewing scores for that test. */
-export function setResultPaidForExam(examId: string): void {
+export function setResultPaidForExam(examId: string, dummyTransactionId?: string): void {
   localStorage.setItem(PAID_RESULT_PREFIX + examId, '1')
+  if (dummyTransactionId) {
+    localStorage.setItem(PAID_TXN_PREFIX + examId, dummyTransactionId)
+  }
+}
+
+export function getPaidTransactionIdForExam(examId: string): string | null {
+  return localStorage.getItem(PAID_TXN_PREFIX + examId)
 }
 
 export function saveLastResult(result: ExamResult): void {

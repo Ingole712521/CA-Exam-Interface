@@ -19,24 +19,52 @@ export interface QuestionImageSpec {
   alt: string
 }
 
+/** One internal part of a CA-style compound question (OR groups, marks per part). */
+export interface RawQuestionPart {
+  id: string
+  /** e.g. "(a)", "(b)" */
+  label: string
+  prompt: string
+  marks: number
+  /** Parts sharing the same id form an “answer any one” group. */
+  orGroupId?: string
+  format?: QuestionFormat
+  passage?: string
+  /** MCQ options; empty when `format === 'upload'`. */
+  options: string[]
+  /** 0-based correct index for MCQs; ignored for uploads. */
+  correctAnswer: number
+  table?: QuestionTableSpec
+  image?: QuestionImageSpec
+}
+
 export interface RawQuestion {
   id: string
   /**
    * Optional long theory / case facts / directions (shown above the main question).
    */
   passage?: string
-  /** The actual question line (or full stem if no passage). */
+  /** Lead-in / directions (e.g. “Answer the following”). */
   question: string
+  /** e.g. "Q2 (20 Marks)" */
+  headline?: string
+  /** e.g. "Q1 (Compulsory – Mixed Concepts)" */
+  questionCategory?: string
   /**
-   * For MCQs, provide options.
+   * Internal sub-parts with optional OR between groups.
+   * When present, top-level `options` / `correctAnswer` are not used.
+   */
+  parts?: RawQuestionPart[]
+  /**
+   * For single-slot MCQs (no `parts`).
    * For upload-type questions, keep this empty.
    */
-  options: string[]
+  options?: string[]
   /**
    * 0-based index into `options` before shuffle (MCQs only).
    * For upload-type questions, this value is ignored.
    */
-  correctAnswer: number
+  correctAnswer?: number
   /** Presentation hint for badge and layout. */
   format?: QuestionFormat
   image?: QuestionImageSpec
@@ -67,6 +95,13 @@ export interface ExamDefinition {
   sections: RawSection[]
 }
 
+/** Answer state for one internal part of a compound question. */
+export interface PartAnswerState {
+  selectedAnswer: number | null
+  uploadedAnswerImage: string | null
+  uploadedAnswerFileName: string | null
+}
+
 export interface QuestionResponse {
   selectedAnswer: number | null
   /**
@@ -77,6 +112,38 @@ export interface QuestionResponse {
   uploadedAnswerFileName: string | null
   visited: boolean
   markedForReview: boolean
+  /** Present when this navigator slot is a compound (multi-part) question. */
+  compound?: {
+    /** For each OR group, which part id the student is answering. */
+    orGroupChoice: Record<string, string | null>
+    partAnswers: Record<string, PartAnswerState>
+  }
+}
+
+export interface QuestionPartMeta {
+  partId: string
+  label: string
+  prompt: string
+  marks: number
+  orGroupId?: string
+  format?: QuestionFormat
+  passage?: string
+  table?: QuestionTableSpec
+  image?: QuestionImageSpec
+}
+
+export interface QuestionMeta {
+  sectionId: string
+  sectionName: string
+  passage?: string
+  text: string
+  format?: QuestionFormat
+  image?: QuestionImageSpec
+  table?: QuestionTableSpec
+  headline?: string
+  questionCategory?: string
+  isCompound?: boolean
+  parts?: QuestionPartMeta[]
 }
 
 export interface ExamSessionState {
@@ -86,20 +153,12 @@ export interface ExamSessionState {
   startedAt: number
   submittedAt: number | null
   questionIds: string[]
-  questionMeta: Record<
-    string,
-    {
-      sectionId: string
-      sectionName: string
-      passage?: string
-      text: string
-      format?: QuestionFormat
-      image?: QuestionImageSpec
-      table?: QuestionTableSpec
-    }
-  >
+  questionMeta: Record<string, QuestionMeta>
   optionsByQuestion: Record<string, string[]>
   correctIndexByQuestion: Record<string, number>
+  /** Shuffled MCQ options per internal part (compound questions only). */
+  optionsByPart: Record<string, Record<string, string[]>>
+  correctIndexByPart: Record<string, Record<string, number>>
   responses: Record<string, QuestionResponse>
   currentIndex: number
   tabHiddenCount: number

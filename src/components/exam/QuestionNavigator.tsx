@@ -1,8 +1,8 @@
-import type { QuestionResponse } from '../../types/exam'
+import type { ExamSessionState, QuestionResponse } from '../../types/exam'
+import { isQuestionSlotAnswered } from '../../utils/examQuestionHelpers'
 
 type Props = {
-  questionIds: string[]
-  responses: Record<string, QuestionResponse>
+  palette: Pick<ExamSessionState, 'questionIds' | 'responses' | 'questionMeta'>
   currentIndex: number
   onSelect: (index: number) => void
 }
@@ -10,6 +10,7 @@ type Props = {
 function cellClass(
   index: number,
   currentIndex: number,
+  palette: Pick<ExamSessionState, 'questionIds' | 'responses' | 'questionMeta'>,
   r: QuestionResponse | undefined,
 ): string {
   const base =
@@ -19,10 +20,13 @@ function cellClass(
   let state =
     'border border-slate-200 bg-slate-100 text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300'
 
+  const qid = palette.questionIds[index]
+  const answered = qid ? isQuestionSlotAnswered(palette, qid) : false
+
   if (r?.markedForReview) {
     state =
       'border-amber-400 bg-amber-100 text-amber-900 dark:border-amber-500 dark:bg-amber-900/40 dark:text-amber-100'
-  } else if (r?.selectedAnswer !== null || r?.uploadedAnswerImage !== null) {
+  } else if (answered) {
     state =
       'border-emerald-500 bg-emerald-100 text-emerald-900 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-100'
   } else if (r?.visited) {
@@ -38,11 +42,11 @@ function cellClass(
 }
 
 export function QuestionNavigator({
-  questionIds,
-  responses,
+  palette,
   currentIndex,
   onSelect,
 }: Props) {
+  const { questionIds, responses } = palette
   return (
     <div className="sticky top-[52px] max-h-[calc(100vh-8rem)] overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
       <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
@@ -55,7 +59,7 @@ export function QuestionNavigator({
             type="button"
             aria-label={`Question ${i + 1}`}
             aria-current={i === currentIndex ? 'true' : undefined}
-            className={cellClass(i, currentIndex, responses[qid])}
+            className={cellClass(i, currentIndex, palette, responses[qid])}
             onClick={() => onSelect(i)}
           >
             {i + 1}

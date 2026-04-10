@@ -28,7 +28,7 @@ type Props = {
   onUploadAnswerImage?: (dataUrl: string, fileName: string | null) => void
 }
 
-function QuestionTableBlock({ spec }: { spec: QuestionTableSpec }) {
+export function QuestionTableBlock({ spec }: { spec: QuestionTableSpec }) {
   return (
     <div className="my-4 overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-600">
       {spec.caption ? (

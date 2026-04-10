@@ -9,9 +9,14 @@ import {
   type ReactNode,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { ExamSessionState } from '../types/exam'
+import type { ExamSessionState, PartAnswerState } from '../types/exam'
 import { getExamById } from '../data/mockExams'
 import { buildNewSession, ensureInitialVisit } from '../utils/buildExamSession'
+import {
+  buildEmptyCompoundState,
+  ensureSessionCompoundFields,
+  isQuestionSlotAnswered,
+} from '../utils/examQuestionHelpers'
 import {
   loadExamSession,
   saveExamSession,
@@ -40,6 +45,13 @@ type ExamSessionContextValue = {
   tabViolationSecondsLeft: number | null
   selectOption: (optionIndex: number) => void
   setUploadedAnswerImage: (dataUrl: string, fileName: string | null) => void
+  selectCompoundOrGroup: (orGroupId: string, partId: string) => void
+  selectCompoundPartOption: (partId: string, optionIndex: number) => void
+  setCompoundPartUpload: (
+    partId: string,
+    dataUrl: string,
+    fileName: string | null,
+  ) => void
   goToIndex: (index: number) => void
   next: () => void
   prev: () => void
@@ -105,7 +117,7 @@ export function ExamSessionProvider({
       return
     }
 
-    const normalized = normalizeSession(existing)
+    const normalized = ensureSessionCompoundFields(normalizeSession(existing))
     const rawStored = existing as ExamSessionState & { tabHiddenCount?: number }
     const hadTabCount = typeof rawStored.tabHiddenCount === 'number'
     if (!hadTabCount) {
@@ -188,7 +200,6 @@ export function ExamSessionProvider({
 
       const next = (s.tabHiddenCount ?? 0) + 1
       setSession({ ...s, tabHiddenCount: next })
-      console.log('next', next)
       if (next > TAB_SWITCH_LIMIT) {
         tabViolationStartedRef.current = true
         setTabViolationSecondsLeft(5)
@@ -217,17 +228,16 @@ export function ExamSessionProvider({
 
   const answeredCount = useMemo(() => {
     if (!session) return 0
-    return session.questionIds.filter(
-      (qid) => {
-        const r = session.responses[qid]
-        return r?.selectedAnswer !== null || r?.uploadedAnswerImage !== null
-      },
+    return session.questionIds.filter((qid) =>
+      isQuestionSlotAnswered(session, qid),
     ).length
   }, [session])
 
   const selectOption = useCallback(
     (optionIndex: number) => {
       if (!session || !currentQuestionId || session.submittedAt) return
+      const meta = session.questionMeta[currentQuestionId]
+      if (meta?.isCompound) return
       const r = session.responses[currentQuestionId]
       if (!r) return
       persist({
@@ -248,9 +258,143 @@ export function ExamSessionProvider({
     [session, currentQuestionId, persist],
   )
 
+  const selectCompoundOrGroup = useCallback(
+    (orGroupId: string, partId: string) => {
+      if (!session || !currentQuestionId || session.submittedAt) return
+      const meta = session.questionMeta[currentQuestionId]
+      const r = session.responses[currentQuestionId]
+      if (!meta?.isCompound || !meta.parts || !r?.compound) return
+
+      const partAnswers: Record<string, PartAnswerState> = {
+        ...r.compound.partAnswers,
+      }
+      for (const p of meta.parts) {
+        if (p.orGroupId === orGroupId && p.partId !== partId) {
+          partAnswers[p.partId] = {
+            selectedAnswer: null,
+            uploadedAnswerImage: null,
+            uploadedAnswerFileName: null,
+          }
+        }
+      }
+
+      persist({
+        ...session,
+        responses: {
+          ...session.responses,
+          [currentQuestionId]: {
+            ...r,
+            compound: {
+              ...r.compound,
+              orGroupChoice: {
+                ...r.compound.orGroupChoice,
+                [orGroupId]: partId,
+              },
+              partAnswers,
+            },
+            visited: true,
+          },
+        },
+      })
+    },
+    [session, currentQuestionId, persist],
+  )
+
+  const selectCompoundPartOption = useCallback(
+    (partId: string, optionIndex: number) => {
+      if (!session || !currentQuestionId || session.submittedAt) return
+      const meta = session.questionMeta[currentQuestionId]
+      const r = session.responses[currentQuestionId]
+      if (!meta?.isCompound || !meta.parts || !r?.compound) return
+      const part = meta.parts.find((p) => p.partId === partId)
+      if (!part || part.format === 'upload') return
+      if (
+        part.orGroupId &&
+        r.compound.orGroupChoice[part.orGroupId] !== partId
+      ) {
+        return
+      }
+      const prev = r.compound.partAnswers[partId] ?? {
+        selectedAnswer: null,
+        uploadedAnswerImage: null,
+        uploadedAnswerFileName: null,
+      }
+      persist({
+        ...session,
+        responses: {
+          ...session.responses,
+          [currentQuestionId]: {
+            ...r,
+            compound: {
+              ...r.compound,
+              partAnswers: {
+                ...r.compound.partAnswers,
+                [partId]: {
+                  ...prev,
+                  selectedAnswer: optionIndex,
+                  uploadedAnswerImage: null,
+                  uploadedAnswerFileName: null,
+                },
+              },
+            },
+            visited: true,
+          },
+        },
+      })
+    },
+    [session, currentQuestionId, persist],
+  )
+
+  const setCompoundPartUpload = useCallback(
+    (partId: string, dataUrl: string, fileName: string | null) => {
+      if (!session || !currentQuestionId || session.submittedAt) return
+      const meta = session.questionMeta[currentQuestionId]
+      const r = session.responses[currentQuestionId]
+      if (!meta?.isCompound || !meta.parts || !r?.compound) return
+      const part = meta.parts.find((p) => p.partId === partId)
+      if (!part || part.format !== 'upload') return
+      if (
+        part.orGroupId &&
+        r.compound.orGroupChoice[part.orGroupId] !== partId
+      ) {
+        return
+      }
+      const prev = r.compound.partAnswers[partId] ?? {
+        selectedAnswer: null,
+        uploadedAnswerImage: null,
+        uploadedAnswerFileName: null,
+      }
+      persist({
+        ...session,
+        responses: {
+          ...session.responses,
+          [currentQuestionId]: {
+            ...r,
+            compound: {
+              ...r.compound,
+              partAnswers: {
+                ...r.compound.partAnswers,
+                [partId]: {
+                  ...prev,
+                  selectedAnswer: null,
+                  uploadedAnswerImage: dataUrl,
+                  uploadedAnswerFileName: fileName,
+                },
+              },
+            },
+            visited: true,
+          },
+        },
+      })
+    },
+    [session, currentQuestionId, persist],
+  )
+
   const setUploadedAnswerImage = useCallback(
     (dataUrl: string, fileName: string | null) => {
       if (!session || !currentQuestionId || session.submittedAt) return
+      const meta = session.questionMeta[currentQuestionId]
+      if (meta?.isCompound) return
       const r = session.responses[currentQuestionId]
       if (!r) return
       persist({
@@ -321,8 +465,26 @@ export function ExamSessionProvider({
 
   const clearResponse = useCallback(() => {
     if (!session || !currentQuestionId || session.submittedAt) return
+    const meta = session.questionMeta[currentQuestionId]
     const r = session.responses[currentQuestionId]
     if (!r) return
+    if (meta?.isCompound && meta.parts) {
+      persist({
+        ...session,
+        responses: {
+          ...session.responses,
+          [currentQuestionId]: {
+            ...r,
+            selectedAnswer: null,
+            uploadedAnswerImage: null,
+            uploadedAnswerFileName: null,
+            compound: buildEmptyCompoundState(meta.parts),
+            visited: true,
+          },
+        },
+      })
+      return
+    }
     persist({
       ...session,
       responses: {
@@ -382,6 +544,9 @@ export function ExamSessionProvider({
       tabViolationSecondsLeft,
       selectOption,
       setUploadedAnswerImage,
+      selectCompoundOrGroup,
+      selectCompoundPartOption,
+      setCompoundPartUpload,
       goToIndex,
       next,
       prev,
@@ -401,6 +566,9 @@ export function ExamSessionProvider({
       tabViolationSecondsLeft,
       selectOption,
       setUploadedAnswerImage,
+      selectCompoundOrGroup,
+      selectCompoundPartOption,
+      setCompoundPartUpload,
       goToIndex,
       next,
       prev,

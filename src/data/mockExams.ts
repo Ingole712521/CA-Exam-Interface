@@ -15,6 +15,92 @@ export const mockExams: ExamDefinition[] = [
         assessmentType: 'subjective',
         questions: [
           {
+            id: 'acc-compound-q1',
+            questionCategory: 'Q1 (Compulsory – Mixed Concepts)',
+            passage:
+              'M/s GreenGrow purchased inventory ₹4,80,000 on credit and sold 60% of it for ₹5,40,000 cash during the quarter. Closing inventory is valued at cost or net realisable value, whichever is lower.',
+            question: 'Based on the short case above, answer the following:',
+            parts: [
+              {
+                id: 'q1a',
+                label: '(a)',
+                prompt:
+                  'Case-based MCQ: If cost of goods sold is 55% of sales (on sold units only), gross profit for the quarter is closest to:',
+                marks: 6,
+                format: 'case_study',
+                options: [
+                  '₹2,43,000',
+                  '₹2,97,000',
+                  '₹2,43,000 less any NRV write-down on closing stock',
+                  'Cannot be determined without opening stock',
+                ],
+                correctAnswer: 2,
+              },
+              {
+                id: 'q1b',
+                label: '(b)',
+                prompt:
+                  'Theory: The matching concept in financial reporting primarily supports which objective?',
+                marks: 4,
+                format: 'theoretical',
+                options: [
+                  'Recording only cash transactions',
+                  'Aligning expenses with the revenue they help generate',
+                  'Valuing all assets at liquidation value',
+                  'Deferring all liabilities indefinitely',
+                ],
+                correctAnswer: 1,
+              },
+            ],
+          },
+          {
+            id: 'acc-compound-q2',
+            headline: 'Q2 (20 Marks)',
+            passage:
+              'Alpha Ltd. closed its books on 31 March 2024. You are given that revenue from operations for the year was ₹42,00,000 and major expense heads are available in the working papers (illustrative).',
+            question:
+              'Answer either part (a) or part (b) below, and also answer part (c).',
+            parts: [
+              {
+                id: 'q2a',
+                label: '(a)',
+                prompt:
+                  'Prepare financial statements from the trial balance (upload a clear image of your structured answer / working).',
+                marks: 10,
+                orGroupId: 'q2-practical',
+                format: 'upload',
+                options: [],
+                correctAnswer: 0,
+              },
+              {
+                id: 'q2b',
+                label: '(b)',
+                prompt:
+                  'Calculate goodwill using the super profit method from the assumptions in your working (upload your solution).',
+                marks: 10,
+                orGroupId: 'q2-practical',
+                format: 'upload',
+                options: [],
+                correctAnswer: 0,
+              },
+              {
+                id: 'q2c',
+                label: '(c)',
+                prompt:
+                  'Theory: Which option best describes types of audit evidence you would expect in a statutory audit?',
+                marks: 10,
+                format: 'theoretical',
+                options: [
+                  'Only documentary evidence on paper',
+                  'Physical, documentary, oral, analytical and other appropriate evidence',
+                  'Only management representations',
+                  'Evidence obtained solely from social media',
+                ],
+                correctAnswer: 1,
+              },
+            ],
+          },
+          {
             id: 'acc-1',
             question:
               'Which accounting equation correctly represents the balance sheet?',

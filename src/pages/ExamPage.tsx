@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { ExamSessionProvider, useExamSession } from '../context/ExamSessionContext'
 import { ExamTopBar } from '../components/exam/ExamTopBar'
 import { QuestionNavigator } from '../components/exam/QuestionNavigator'
+import { CompoundQuestionCard } from '../components/exam/CompoundQuestionCard'
 import { QuestionCard } from '../components/exam/QuestionCard'
 import { ExamRightPanel } from '../components/exam/ExamRightPanel'
 import { ExamBottomControls } from '../components/exam/ExamBottomControls'
@@ -18,6 +19,9 @@ function ExamLayout() {
     answeredCount,
     selectOption,
     setUploadedAnswerImage,
+    selectCompoundOrGroup,
+    selectCompoundPartOption,
+    setCompoundPartUpload,
     goToIndex,
     next,
     prev,
@@ -113,29 +117,46 @@ function ExamLayout() {
       <div className="mx-auto grid w-full max-w-[1600px] flex-1 grid-cols-1 gap-4 px-3 py-4 lg:grid-cols-[260px_1fr_280px] lg:gap-6 lg:px-6">
         <aside className="order-2 lg:order-1">
           <QuestionNavigator
-            questionIds={session.questionIds}
-            responses={session.responses}
+            palette={{
+              questionIds: session.questionIds,
+              responses: session.responses,
+              questionMeta: session.questionMeta,
+            }}
             currentIndex={session.currentIndex}
             onSelect={goToIndex}
           />
         </aside>
 
         <section className="order-1 min-w-0 lg:order-2">
-          <QuestionCard
-            questionNumber={qNum}
-            total={total}
-            passage={meta?.passage}
-            text={meta?.text ?? ''}
-            format={meta?.format}
-            image={meta?.image}
-            table={meta?.table}
-            options={options}
-            selectedIndex={resp?.selectedAnswer ?? null}
-            onSelect={selectOption}
-            uploadedAnswerImage={resp?.uploadedAnswerImage ?? null}
-            uploadedAnswerFileName={resp?.uploadedAnswerFileName ?? null}
-            onUploadAnswerImage={setUploadedAnswerImage}
-          />
+          {meta?.isCompound && meta.parts && resp?.compound ? (
+            <CompoundQuestionCard
+              questionNumber={qNum}
+              total={total}
+              meta={meta}
+              optionsByPart={session.optionsByPart[currentQuestionId] ?? {}}
+              orGroupChoice={resp.compound.orGroupChoice}
+              partAnswers={resp.compound.partAnswers}
+              onSelectOrGroup={selectCompoundOrGroup}
+              onSelectPartOption={selectCompoundPartOption}
+              onUploadPart={setCompoundPartUpload}
+            />
+          ) : (
+            <QuestionCard
+              questionNumber={qNum}
+              total={total}
+              passage={meta?.passage}
+              text={meta?.text ?? ''}
+              format={meta?.format}
+              image={meta?.image}
+              table={meta?.table}
+              options={options}
+              selectedIndex={resp?.selectedAnswer ?? null}
+              onSelect={selectOption}
+              uploadedAnswerImage={resp?.uploadedAnswerImage ?? null}
+              uploadedAnswerFileName={resp?.uploadedAnswerFileName ?? null}
+              onUploadAnswerImage={setUploadedAnswerImage}
+            />
+          )}
         </section>
 
         <aside className="order-3">

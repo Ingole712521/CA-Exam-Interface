@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AppHeader } from '../components/layout/AppHeader'
+import { getExamById } from '../data/mockExams'
+import { payForTestResult } from '../services/dummyPaymentService'
 import {
+  getPaidTransactionIdForExam,
   isResultPaidForExam,
   loadLastResult,
   setResultPaidForExam,
@@ -12,6 +15,8 @@ export default function Result() {
   const [paid, setPaid] = useState(
     () => result != null && isResultPaidForExam(result.examId),
   )
+  const [paying, setPaying] = useState(false)
+  const [payError, setPayError] = useState<string | null>(null)
 
   if (!result) {
     return (
@@ -38,9 +43,24 @@ export default function Result() {
   const gradable = result.gradableQuestionCount
   const uploads = result.uploadQuestionCount
   const examId = result.examId
+  const examTitle = result.examTitle
+  const feeDisplay = getExamById(examId)?.feeDisplay ?? '—'
+  const dummyPaymentRef = getPaidTransactionIdForExam(examId)
 
-  function handleUnlockDemo() {
-    setResultPaidForExam(examId)
+  async function handlePayForResults() {
+    setPayError(null)
+    setPaying(true)
+    const outcome = await payForTestResult({
+      examId,
+      examTitle,
+      amountDisplay: feeDisplay,
+    })
+    setPaying(false)
+    if (outcome.ok === false) {
+      setPayError(outcome.message)
+      return
+    }
+    setResultPaidForExam(examId, outcome.transactionId)
     setPaid(true)
   }
 
@@ -64,7 +84,7 @@ export default function Result() {
               </li>
               <li>
                 In this product model, you unlock performance details for a given test
-                after payment of that test&apos;s fee.
+                after payment of that test&apos;s fee ({feeDisplay} for this paper).
               </li>
               {gradable > 0 ? (
                 <li>
@@ -78,13 +98,20 @@ export default function Result() {
           <div className="mt-8">
             <button
               type="button"
-              onClick={handleUnlockDemo}
-              className="w-full rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 sm:w-auto dark:bg-emerald-500 dark:hover:bg-emerald-600"
+              disabled={paying}
+              onClick={() => void handlePayForResults()}
+              className="w-full rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto dark:bg-emerald-500 dark:hover:bg-emerald-600"
             >
-              Simulate payment — unlock results (demo)
+              {paying ? 'Processing payment…' : `Pay ${feeDisplay} — unlock results (dummy)`}
             </button>
+            {payError ? (
+              <p className="mt-3 text-sm text-red-600 dark:text-red-400" role="alert">
+                {payError}
+              </p>
+            ) : null}
             <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              Local preview only: stores consent in this browser; no real payment.
+              Dummy gateway only: no card or UPI data is collected; unlock is stored in
+              this browser after a simulated delay.
             </p>
           </div>
 
@@ -107,6 +134,15 @@ export default function Result() {
           Exam result
         </h1>
         <p className="mt-1 text-slate-500 dark:text-slate-400">{result.examTitle}</p>
+
+        {dummyPaymentRef ? (
+          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+            Dummy payment reference:{' '}
+            <span className="font-mono text-slate-700 dark:text-slate-300">
+              {dummyPaymentRef}
+            </span>
+          </p>
+        ) : null}
 
         {uploads > 0 ? (
           <p className="mt-4 rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
