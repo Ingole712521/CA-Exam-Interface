@@ -7,11 +7,34 @@ export type QuestionFormat =
   | 'table'
   | 'upload'
 
-export interface QuestionTableSpec {
+/** Default grid table (e.g. trial balance excerpt, demand schedule). */
+export interface QuestionStandardTableSpec {
+  layout?: 'standard'
   caption?: string
   headers: string[]
   rows: string[][]
 }
+
+/**
+ * Receipts and Payments account layout: two facing columns (particular + ₹)
+ * with a total row, CA-style presentation.
+ */
+export interface QuestionReceiptsPaymentsTableSpec {
+  layout: 'receipts_payments'
+  caption?: string
+  /** Defaults: "Receipts", "Payments" */
+  receiptsHeading?: string
+  paymentsHeading?: string
+  receipts: { particular: string; amount: string }[]
+  payments: { particular: string; amount: string }[]
+  /** Omit both to hide the total row (e.g. dual-column particulars for P&L). */
+  receiptsTotal?: string
+  paymentsTotal?: string
+}
+
+export type QuestionTableSpec =
+  | QuestionStandardTableSpec
+  | QuestionReceiptsPaymentsTableSpec
 
 export interface QuestionImageSpec {
   /** Public URL or Vite-resolved asset URL */

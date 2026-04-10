@@ -1,8 +1,15 @@
 import type {
   QuestionFormat,
   QuestionImageSpec,
+  QuestionReceiptsPaymentsTableSpec,
   QuestionTableSpec,
 } from '../../types/exam'
+
+function isReceiptsPaymentsTable(
+  spec: QuestionTableSpec,
+): spec is QuestionReceiptsPaymentsTableSpec {
+  return spec.layout === 'receipts_payments'
+}
 
 const FORMAT_LABEL: Record<Exclude<QuestionFormat, 'standard'>, string> = {
   theoretical: 'Theoretical',
@@ -28,7 +35,99 @@ type Props = {
   onUploadAnswerImage?: (dataUrl: string, fileName: string | null) => void
 }
 
+function ReceiptsPaymentsTableBlock({
+  spec,
+}: {
+  spec: QuestionReceiptsPaymentsTableSpec
+}) {
+  const recTitle = spec.receiptsHeading ?? 'Receipts'
+  const payTitle = spec.paymentsHeading ?? 'Payments'
+  const n = Math.max(spec.receipts.length, spec.payments.length)
+
+  return (
+    <div className="my-4 overflow-x-auto">
+      {spec.caption ? (
+        <p className="mb-2 text-xs font-medium text-slate-700 dark:text-slate-300">
+          {spec.caption}
+        </p>
+      ) : null}
+      <table className="w-full min-w-[min(100%,520px)] border-collapse border-2 border-black text-sm text-black dark:border-rose-200/80">
+        <thead>
+          <tr className="bg-[#c9a0b8] dark:bg-rose-900/90 dark:text-rose-50">
+            <th
+              scope="col"
+              className="border border-black px-2 py-2 text-left font-semibold dark:border-rose-700"
+            >
+              {recTitle}
+            </th>
+            <th
+              scope="col"
+              className="border border-black px-2 py-2 text-right font-semibold dark:border-rose-700"
+            >
+              ₹
+            </th>
+            <th
+              scope="col"
+              className="border border-black px-2 py-2 text-left font-semibold dark:border-rose-700"
+            >
+              {payTitle}
+            </th>
+            <th
+              scope="col"
+              className="border border-black px-2 py-2 text-right font-semibold dark:border-rose-700"
+            >
+              ₹
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {Array.from({ length: n }, (_, i) => {
+            const r = spec.receipts[i]
+            const p = spec.payments[i]
+            return (
+              <tr
+                key={i}
+                className="bg-[#f5e3ec] dark:bg-rose-950/50 dark:text-rose-100"
+              >
+                <td className="border border-black px-2 py-1.5 align-top dark:border-rose-800">
+                  {r?.particular ?? ''}
+                </td>
+                <td className="border border-black px-2 py-1.5 text-right font-medium tabular-nums dark:border-rose-800">
+                  {r?.amount ?? ''}
+                </td>
+                <td className="border border-black px-2 py-1.5 align-top dark:border-rose-800">
+                  {p?.particular ?? ''}
+                </td>
+                <td className="border border-black px-2 py-1.5 text-right font-medium tabular-nums dark:border-rose-800">
+                  {p?.amount ?? ''}
+                </td>
+              </tr>
+            )
+          })}
+          {spec.receiptsTotal !== undefined ||
+          spec.paymentsTotal !== undefined ? (
+            <tr className="bg-[#f5e3ec] dark:bg-rose-950/50 dark:text-rose-100">
+              <td className="border border-black px-2 py-2 dark:border-rose-800" />
+              <td className="border-t-2 border-black px-2 py-2 text-right text-base font-semibold tabular-nums dark:border-rose-200">
+                {spec.receiptsTotal ?? ''}
+              </td>
+              <td className="border border-black px-2 py-2 dark:border-rose-800" />
+              <td className="border-t-2 border-black px-2 py-2 text-right text-base font-semibold tabular-nums dark:border-rose-200">
+                {spec.paymentsTotal ?? ''}
+              </td>
+            </tr>
+          ) : null}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 export function QuestionTableBlock({ spec }: { spec: QuestionTableSpec }) {
+  if (isReceiptsPaymentsTable(spec)) {
+    return <ReceiptsPaymentsTableBlock spec={spec} />
+  }
+
   return (
     <div className="my-4 overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-600">
       {spec.caption ? (
@@ -36,14 +135,14 @@ export function QuestionTableBlock({ spec }: { spec: QuestionTableSpec }) {
           {spec.caption}
         </p>
       ) : null}
-      <table className="w-full min-w-[280px] border-collapse text-left text-sm">
+      <table className="w-full min-w-[280px] border-collapse border border-slate-300 text-left text-sm dark:border-slate-600">
         <thead>
           <tr className="bg-slate-100 dark:bg-slate-800">
             {spec.headers.map((h, i) => (
               <th
                 key={i}
                 scope="col"
-                className="border-b border-slate-200 px-3 py-2 font-semibold text-slate-800 dark:border-slate-600 dark:text-slate-100"
+                className="border border-slate-300 px-3 py-2 font-semibold text-slate-800 dark:border-slate-600 dark:text-slate-100"
               >
                 {h}
               </th>
@@ -59,7 +158,7 @@ export function QuestionTableBlock({ spec }: { spec: QuestionTableSpec }) {
               {row.map((cell, ci) => (
                 <td
                   key={ci}
-                  className="border-b border-slate-100 px-3 py-2 text-slate-700 dark:border-slate-700 dark:text-slate-200"
+                  className="border border-slate-300 px-3 py-2 text-slate-700 dark:border-slate-600 dark:text-slate-200"
                 >
                   {cell}
                 </td>
