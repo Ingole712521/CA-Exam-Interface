@@ -111,7 +111,7 @@ export interface ExamDefinition {
   id: string
   title: string
   durationMinutes: number
-  /** CA programme level (phase 1 targets Foundation only). */
+  /** CA programme level: Foundation → Intermediate → Final. */
   level: CaLevel
   /** Per-test fee label shown to students (each test has its own fee). */
   feeDisplay: string
