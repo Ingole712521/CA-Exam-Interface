@@ -33,6 +33,27 @@ const LEVEL_DESCRIPTION: Record<CaLevel, string> = {
     'Final stage before membership — illustrative coverage includes financial reporting, strategic financial management, advanced auditing, and direct tax / international tax style MCQs.',
 }
 
+const LEVEL_SUBJECT_LIST: Record<CaLevel, string[]> = {
+  foundation: [
+    'Accounts (Subjective)',
+    'Law (Subjective)',
+    'Economics (MCQs)',
+    'Mathematics (MCQs)',
+  ],
+  intermediate: [
+    'Advanced Accounting',
+    'Corporate Law',
+    'Cost & Management Accounting',
+    'Taxation',
+  ],
+  final: [
+    'Financial Reporting',
+    'Strategic Financial Management',
+    'Advanced Auditing',
+    'Professional Ethics',
+  ],
+}
+
 const LEVEL_STYLE: Record<
   CaLevel,
   {
@@ -56,6 +77,20 @@ const LEVEL_STYLE: Record<
     chip: 'bg-amber-500/10 text-amber-900 ring-amber-500/25 dark:text-amber-100 dark:ring-amber-400/20',
     dot: 'bg-amber-500',
   },
+}
+
+type DashboardStudentAnalytics = {
+  totalStudents: number
+  passStudents: number
+  failStudents: number
+  liveTestStudents: number
+}
+
+const STUDENT_ANALYTICS: DashboardStudentAnalytics = {
+  totalStudents: 1280,
+  passStudents: 842,
+  failStudents: 438,
+  liveTestStudents: 173,
 }
 
 function examsByLevel(exams: ExamDefinition[]): Record<CaLevel, ExamDefinition[]> {
@@ -226,6 +261,9 @@ function ExamCard({ exam, level }: { exam: ExamDefinition; level: CaLevel }) {
 export default function Dashboard() {
   const grouped = examsByLevel(mockExams)
   const totalTests = mockExams.length
+  const totalSubjects = new Set(
+    mockExams.flatMap((exam) => exam.sections.map((section) => section.name)),
+  ).size
   const totalQuestions = mockExams.reduce(
     (n, e) => n + e.sections.reduce((m, s) => m + s.questions.length, 0),
     0,
@@ -280,10 +318,32 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="grid divide-y divide-slate-100 bg-slate-50/90 sm:grid-cols-3 sm:divide-x sm:divide-y-0 dark:divide-slate-800 dark:bg-slate-900/60">
+          <div className="grid divide-y divide-slate-100 bg-slate-50/90 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-3 dark:divide-slate-800 dark:bg-slate-900/60">
             <div className="flex flex-col px-6 py-5 sm:py-6">
               <span className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                Mock tests
+                Number of students
+              </span>
+              <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
+                {STUDENT_ANALYTICS.totalStudents}
+              </span>
+              <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                Registered learners
+              </span>
+            </div>
+            <div className="flex flex-col px-6 py-5 sm:py-6">
+              <span className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                Number of subjects
+              </span>
+              <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
+                {totalSubjects}
+              </span>
+              <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                Across all CA levels
+              </span>
+            </div>
+            <div className="flex flex-col px-6 py-5 sm:py-6">
+              <span className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                Number of tests
               </span>
               <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
                 {totalTests}
@@ -294,24 +354,35 @@ export default function Dashboard() {
             </div>
             <div className="flex flex-col px-6 py-5 sm:py-6">
               <span className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                Question bank
+                Students pass
               </span>
               <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
-                {totalQuestions}
+                {STUDENT_ANALYTICS.passStudents}
               </span>
               <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Total items in catalogue
+                Cleared assessment criteria
               </span>
             </div>
             <div className="flex flex-col px-6 py-5 sm:py-6">
               <span className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                In progress
+                Students fail
               </span>
               <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
-                {activeAttempts}
+                {STUDENT_ANALYTICS.failStudents}
               </span>
               <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Active timed attempts
+                Did not clear minimum score
+              </span>
+            </div>
+            <div className="flex flex-col px-6 py-5 sm:py-6">
+              <span className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                Students giving live test
+              </span>
+              <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
+                {STUDENT_ANALYTICS.liveTestStudents}
+              </span>
+              <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                Active right now
               </span>
             </div>
           </div>
@@ -320,7 +391,8 @@ export default function Dashboard() {
         <p className="mb-12 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Each test has its own fee. Subjective uploads are reviewed by an administrator; scores
           unlock after payment (demo uses a local unlock). MCQ options shuffle on start; timer and
-          progress persist if you refresh. Tables and account layouts render in exam view.
+          progress persist if you refresh. Tables and account layouts render in exam view. Question
+          bank: {totalQuestions} total items. Current in-progress attempts: {activeAttempts}.
         </p>
 
         {LEVEL_ORDER.map((level) => {
@@ -347,6 +419,14 @@ export default function Dashboard() {
                     <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                       {LEVEL_DESCRIPTION[level]}
                     </p>
+                    <ul className="mt-3 space-y-1.5 text-sm text-slate-700 dark:text-slate-300">
+                      {LEVEL_SUBJECT_LIST[level].map((subject) => (
+                        <li key={subject} className="flex items-start gap-2">
+                          <span className="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400 dark:bg-slate-500" />
+                          <span>{subject}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
                 <span className="shrink-0 self-start rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300 sm:self-auto">
