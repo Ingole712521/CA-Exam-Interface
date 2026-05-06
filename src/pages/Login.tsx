@@ -12,6 +12,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [error, setError] = useState('')
+  const [isLaunching, setIsLaunching] = useState(false)
 
   if (user) {
     return <Navigate to="/dashboard" replace />
@@ -19,22 +20,30 @@ export default function Login() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (isLaunching) return
     if (!email.trim() || !name.trim()) {
       setError('Please enter your name and email.')
       return
     }
     setError('')
+    setIsLaunching(true)
     login({ email: email.trim(), name: name.trim() })
-    navigate(from || '/dashboard', { replace: true })
+    window.setTimeout(() => {
+      navigate(from || '/dashboard', { replace: true })
+    }, 900)
   }
 
   return (
-    <div className="flex min-h-svh flex-col justify-center bg-slate-50 px-4 dark:bg-slate-950">
-      <div className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+    <div className="relative flex min-h-svh flex-col justify-center overflow-hidden bg-slate-950 px-4">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-16 top-20 h-48 w-48 rounded-full bg-emerald-400/20 blur-3xl" />
+        <div className="absolute -right-10 bottom-16 h-56 w-56 rounded-full bg-cyan-400/20 blur-3xl" />
+      </div>
+      <div className="relative mx-auto w-full max-w-md rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
         <h1 className="mb-1 text-2xl font-semibold text-slate-900 dark:text-white">
           Sign in
         </h1>
-        <p className="mb-6 text-sm text-slate-500 dark:text-slate-400">
+        <p className="mb-6 text-sm text-slate-200">
           Online examination portal for CA students — local demo (no server). Admin
           approval is skipped here.
         </p>
@@ -42,7 +51,7 @@ export default function Login() {
           <div>
             <label
               htmlFor="login-name"
-              className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300"
+              className="mb-1 block text-sm font-medium text-slate-100"
             >
               Full name
             </label>
@@ -51,13 +60,13 @@ export default function Login() {
               autoComplete="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-slate-900 shadow-sm outline-none ring-emerald-500/30 focus:ring-2 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white shadow-sm outline-none placeholder:text-slate-300 ring-emerald-400/40 focus:ring-2"
             />
           </div>
           <div>
             <label
               htmlFor="login-email"
-              className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300"
+              className="mb-1 block text-sm font-medium text-slate-100"
             >
               Email
             </label>
@@ -67,24 +76,45 @@ export default function Login() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-slate-900 shadow-sm outline-none ring-emerald-500/30 focus:ring-2 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+              className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white shadow-sm outline-none placeholder:text-slate-300 ring-emerald-400/40 focus:ring-2"
             />
           </div>
           {error && (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            <p className="text-sm text-red-300">{error}</p>
           )}
           <button
             type="submit"
-            className="w-full rounded-lg bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+            disabled={isLaunching}
+            className="relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-90"
           >
-            Continue to dashboard
+            <span
+              className={`inline-flex items-center gap-2 transition-all duration-700 ${
+                isLaunching ? '-translate-y-10 opacity-0' : 'translate-y-0 opacity-100'
+              }`}
+            >
+              Continue to dashboard
+            </span>
+            <span
+              className={`pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 transition-all duration-700 ${
+                isLaunching ? '-translate-y-12 opacity-100' : 'translate-y-3 opacity-0'
+              }`}
+            >
+              🚀
+            </span>
+            <span
+              className={`pointer-events-none absolute left-1/2 top-[62%] -translate-x-1/2 text-xs transition-opacity duration-500 ${
+                isLaunching ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              ✨✨
+            </span>
           </button>
         </form>
-        <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+        <p className="mt-6 text-center text-sm text-slate-200">
           No account?{' '}
           <Link
             to="/signup"
-            className="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+            className="font-medium text-emerald-200 hover:underline"
           >
             Sign up
           </Link>
