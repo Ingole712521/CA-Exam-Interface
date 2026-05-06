@@ -6,7 +6,10 @@ import Dashboard from './pages/Dashboard'
 import ExamPage from './pages/ExamPage'
 import Login from './pages/Login'
 import Result from './pages/Result'
+import EvaluatorPapers from './pages/EvaluatorPapers'
+import EvaluatorReview from './pages/EvaluatorReview'
 import Signup from './pages/Signup'
+import StudentTestPage from './pages/StudentTestPage'
 
 export default function App() {
   return (
@@ -36,6 +39,30 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Result />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student-test"
+            element={
+              <ProtectedRoute>
+                <StudentTestPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/evaluator/papers"
+            element={
+              <ProtectedRoute>
+                <EvaluatorPapers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/evaluator/papers/:reviewKey"
+            element={
+              <ProtectedRoute>
+                <EvaluatorReview />
               </ProtectedRoute>
             }
           />

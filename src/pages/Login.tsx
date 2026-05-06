@@ -1,9 +1,18 @@
 import { useState } from 'react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+function resolveRole(email: string, name: string): 'admin' | 'evaluator' | 'student' {
+  const emailText = email.toLowerCase()
+  const nameText = name.toLowerCase()
+  const combined = `${emailText} ${nameText}`
+  if (combined.includes('admin')) return 'admin'
+  if (combined.includes('evaluator') || combined.includes('eval')) return 'evaluator'
+  return 'student'
+}
+
 export default function Login() {
-  const { user, login } = useAuth()
+  const { user, login, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const from = (location.state as { from?: { pathname: string } })?.from
@@ -14,10 +23,6 @@ export default function Login() {
   const [error, setError] = useState('')
   const [isLaunching, setIsLaunching] = useState(false)
 
-  if (user) {
-    return <Navigate to="/dashboard" replace />
-  }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (isLaunching) return
@@ -27,7 +32,13 @@ export default function Login() {
     }
     setError('')
     setIsLaunching(true)
-    login({ email: email.trim(), name: name.trim() })
+    const normalizedEmail = email.trim()
+    const normalizedName = name.trim()
+    login({
+      email: normalizedEmail,
+      name: normalizedName,
+      role: resolveRole(normalizedEmail, normalizedName),
+    })
     window.setTimeout(() => {
       navigate(from || '/dashboard', { replace: true })
     }, 900)
@@ -45,8 +56,26 @@ export default function Login() {
         </h1>
         <p className="mb-6 text-sm text-slate-200">
           Online examination portal for CA students — local demo (no server). Admin
-          approval is skipped here.
+          approval is skipped here. Role is inferred from credentials: use{' '}
+          <span className="font-semibold">admin</span> or{' '}
+          <span className="font-semibold">evaluator</span> in name/email for those dashboards;
+          otherwise student mode opens.
         </p>
+        {user ? (
+          <div className="mb-4 rounded-xl border border-amber-200/60 bg-amber-100/10 p-3 text-sm text-amber-100">
+            <p>
+              Currently signed in as <span className="font-semibold">{user.name}</span> (
+              {user.role}). You can switch account by continuing below.
+            </p>
+            <button
+              type="button"
+              onClick={logout}
+              className="mt-2 text-xs font-semibold text-amber-200 underline-offset-2 hover:underline"
+            >
+              Clear current session
+            </button>
+          </div>
+        ) : null}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label

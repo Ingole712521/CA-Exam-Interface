@@ -19,6 +19,7 @@ import {
 } from '../utils/examQuestionHelpers'
 import {
   loadExamSession,
+  loadUser,
   saveExamSession,
   saveLastResult,
 } from '../utils/examSessionStorage'
@@ -131,6 +132,8 @@ export function ExamSessionProvider({
         const finished: ExamSessionState = {
           ...normalized,
           submittedAt: Date.now(),
+          submittedByName: loadUser()?.name ?? 'Student',
+          submittedByEmail: loadUser()?.email ?? 'student@example.com',
         }
         saveExamSession(finished)
         saveLastResult(computeResult(normalized))
@@ -166,6 +169,8 @@ export function ExamSessionProvider({
         const finished: ExamSessionState = {
           ...s,
           submittedAt: Date.now(),
+          submittedByName: loadUser()?.name ?? 'Student',
+          submittedByEmail: loadUser()?.email ?? 'student@example.com',
         }
         saveExamSession(finished)
         saveLastResult(computeResult(s))
@@ -507,6 +512,8 @@ export function ExamSessionProvider({
     const finished: ExamSessionState = {
       ...session,
       submittedAt: Date.now(),
+      submittedByName: loadUser()?.name ?? 'Student',
+      submittedByEmail: loadUser()?.email ?? 'student@example.com',
     }
     saveExamSession(finished)
     saveLastResult(computeResult(session))

@@ -165,6 +165,8 @@ export interface ExamSessionState {
   optionsByPart: Record<string, Record<string, string[]>>
   correctIndexByPart: Record<string, Record<string, number>>
   responses: Record<string, QuestionResponse>
+  submittedByName?: string
+  submittedByEmail?: string
   currentIndex: number
   tabHiddenCount: number
 }

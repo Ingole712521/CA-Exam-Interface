@@ -28,6 +28,26 @@ export function AppHeader() {
           >
             Dashboard
           </NavLink>
+          {user?.role === 'student' ? (
+            <NavLink
+              to="/student-test"
+              className={({ isActive }) =>
+                `${linkClass} ${isActive ? activeClass : ''}`
+              }
+            >
+              Test
+            </NavLink>
+          ) : null}
+          {user?.role === 'evaluator' ? (
+            <NavLink
+              to="/evaluator/papers"
+              className={({ isActive }) =>
+                `${linkClass} ${isActive ? activeClass : ''}`
+              }
+            >
+              Papers
+            </NavLink>
+          ) : null}
           <button
             type="button"
             onClick={toggle}
@@ -40,7 +60,7 @@ export function AppHeader() {
           {user && (
             <>
               <span className="hidden px-2 text-sm text-slate-500 sm:inline dark:text-slate-400">
-                {user.name}
+                {user.name} ({user.role})
               </span>
               <button type="button" onClick={logout} className={linkClass}>
                 Log out

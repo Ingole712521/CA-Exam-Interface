@@ -1,7 +1,14 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { mockExams } from '../data/mockExams'
 import { AppHeader } from '../components/layout/AppHeader'
-import { loadExamSession, startFreshExamAttempt } from '../utils/examSessionStorage'
+import {
+  loadExamSession,
+  loadReviewedPapers,
+  loadResultHistory,
+  loadSubmittedPapers,
+  startFreshExamAttempt,
+} from '../utils/examSessionStorage'
 import type { CaLevel, ExamDefinition, SectionAssessmentType } from '../types/exam'
 
 const LEVEL_ORDER: CaLevel[] = ['foundation', 'intermediate', 'final']
@@ -259,6 +266,7 @@ function ExamCard({ exam, level }: { exam: ExamDefinition; level: CaLevel }) {
 }
 
 export default function Dashboard() {
+  const { user } = useAuth()
   const grouped = examsByLevel(mockExams)
   const totalTests = mockExams.length
   const totalSubjects = new Set(
@@ -269,6 +277,150 @@ export default function Dashboard() {
     0,
   )
   const activeAttempts = mockExams.filter((e) => sessionActive(e.id)).length
+  const studentResults = loadResultHistory()
+  const testsGiven = studentResults.length
+  const averageMark = testsGiven
+    ? Math.round(
+        studentResults.reduce((acc, result) => acc + result.percentage, 0) / testsGiven,
+      )
+    : 0
+  const lastFiveResults = studentResults.slice(-5)
+  const submittedPapers = loadSubmittedPapers()
+  const reviewedByCurrentEvaluator = loadReviewedPapers().filter(
+    (record) => record.evaluatorEmail === user?.email,
+  )
+
+  if (user?.role === 'student') {
+    return (
+      <div className="relative min-h-svh overflow-hidden bg-slate-100 dark:bg-slate-950">
+        <AppHeader />
+        <main className="mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Student dashboard
+            </h1>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              Track your attempts and performance trend.
+            </p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  Number of tests given
+                </p>
+                <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
+                  {testsGiven}
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  Average mark
+                </p>
+                <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
+                  {averageMark}%
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+              Performance graph
+            </h2>
+            <div className="mt-5">
+              {lastFiveResults.length > 0 ? (
+                <div className="space-y-3">
+                  {lastFiveResults.map((result) => (
+                    <div key={`${result.examId}-${result.completedAt}`}>
+                      <div className="mb-1 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+                        <span className="truncate pr-2">{result.examTitle}</span>
+                        <span className="font-semibold">{result.percentage}%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-slate-200 dark:bg-slate-700">
+                        <div
+                          className="h-2 rounded-full bg-emerald-500"
+                          style={{ width: `${Math.max(4, result.percentage)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  No completed tests yet. Start a paper from the Test page.
+                </p>
+              )}
+            </div>
+            <Link
+              to="/student-test"
+              className="mt-6 inline-block rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+            >
+              Go to Test Selection
+            </Link>
+          </section>
+        </main>
+      </div>
+    )
+  }
+
+  if (user?.role === 'evaluator') {
+    const checkedCount = reviewedByCurrentEvaluator.length
+    const uncheckedCount = Math.max(0, submittedPapers.length - checkedCount)
+    const studentPaperChecked = new Set(
+      submittedPapers
+        .filter((paper) =>
+          reviewedByCurrentEvaluator.some((review) => review.reviewKey === paper.reviewKey),
+        )
+        .map((paper) => paper.submittedByEmail),
+    ).size
+
+    return (
+      <div className="relative min-h-svh overflow-hidden bg-slate-100 dark:bg-slate-950">
+        <AppHeader />
+        <main className="mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Evaluator dashboard
+            </h1>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              Review submitted papers and check student answers against answer keys.
+            </p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  Number of paper checked
+                </p>
+                <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
+                  {checkedCount}
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  Number of paper unchecked
+                </p>
+                <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
+                  {uncheckedCount}
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+                <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                  Student paper you checked
+                </p>
+                <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
+                  {studentPaperChecked}
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/evaluator/papers"
+              className="mt-6 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+            >
+              Open student paper list
+            </Link>
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="relative min-h-svh overflow-hidden bg-slate-100 dark:bg-slate-950">

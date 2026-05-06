@@ -23,7 +23,7 @@ export default function Signup() {
     }
     setError('')
     setIsLaunching(true)
-    login({ email: email.trim(), name: name.trim() })
+    login({ email: email.trim(), name: name.trim(), role: 'student' })
     window.setTimeout(() => {
       navigate('/dashboard', { replace: true })
     }, 900)
