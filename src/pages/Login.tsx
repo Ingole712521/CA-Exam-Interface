@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-function resolveRole(email: string, name: string): 'admin' | 'evaluator' | 'student' {
-  const emailText = email.toLowerCase()
-  const nameText = name.toLowerCase()
-  const combined = `${emailText} ${nameText}`
-  if (combined.includes('admin')) return 'admin'
-  if (combined.includes('evaluator') || combined.includes('eval')) return 'evaluator'
-  return 'student'
+type LoginApiUser = {
+  id: number
+  loginId: string
+  password: string
+  name: string
+  email: string
+  role: 'admin' | 'evaluator' | 'student'
 }
 
 export default function Login() {
@@ -18,30 +18,51 @@ export default function Login() {
   const from = (location.state as { from?: { pathname: string } })?.from
     ?.pathname
 
-  const [email, setEmail] = useState('')
-  const [name, setName] = useState('')
+  const [loginId, setLoginId] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLaunching, setIsLaunching] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (isLaunching) return
-    if (!email.trim() || !name.trim()) {
-      setError('Please enter your name and email.')
+    if (!loginId.trim() || !password.trim()) {
+      setError('Please enter login ID and password.')
       return
     }
     setError('')
     setIsLaunching(true)
-    const normalizedEmail = email.trim()
-    const normalizedName = name.trim()
-    login({
-      email: normalizedEmail,
-      name: normalizedName,
-      role: resolveRole(normalizedEmail, normalizedName),
-    })
-    window.setTimeout(() => {
-      navigate(from || '/dashboard', { replace: true })
-    }, 900)
+
+    try {
+      const normalizedLoginId = loginId.trim()
+      const normalizedPassword = password.trim()
+      const query = new URLSearchParams({
+        loginId: normalizedLoginId,
+        password: normalizedPassword,
+      })
+      const response = await fetch(`http://localhost:3001/users?${query.toString()}`)
+      if (!response.ok) {
+        throw new Error('Login service unavailable')
+      }
+      const matchedUsers = (await response.json()) as LoginApiUser[]
+      const matchedUser = matchedUsers[0]
+      if (!matchedUser) {
+        setError('Invalid login ID or password.')
+        setIsLaunching(false)
+        return
+      }
+      login({
+        email: matchedUser.email,
+        name: matchedUser.name,
+        role: matchedUser.role,
+      })
+      window.setTimeout(() => {
+        navigate(from || '/dashboard', { replace: true })
+      }, 900)
+    } catch {
+      setError('Unable to reach login server. Start json-server and try again.')
+      setIsLaunching(false)
+    }
   }
 
   return (
@@ -55,11 +76,8 @@ export default function Login() {
           Sign in
         </h1>
         <p className="mb-6 text-sm text-slate-200">
-          Online examination portal for CA students — local demo (no server). Admin
-          approval is skipped here. Role is inferred from credentials: use{' '}
-          <span className="font-semibold">admin</span> or{' '}
-          <span className="font-semibold">evaluator</span> in name/email for those dashboards;
-          otherwise student mode opens.
+          Online examination portal for CA students. This login now validates credentials
+          from local JSON server data.
         </p>
         {user ? (
           <div className="mb-4 rounded-xl border border-amber-200/60 bg-amber-100/10 p-3 text-sm text-amber-100">
@@ -79,32 +97,32 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
-              htmlFor="login-name"
+              htmlFor="login-id"
               className="mb-1 block text-sm font-medium text-slate-100"
             >
-              Full name
+              Login ID
             </label>
             <input
-              id="login-name"
-              autoComplete="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              id="login-id"
+              autoComplete="username"
+              value={loginId}
+              onChange={(e) => setLoginId(e.target.value)}
               className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white shadow-sm outline-none placeholder:text-slate-300 ring-emerald-400/40 focus:ring-2"
             />
           </div>
           <div>
             <label
-              htmlFor="login-email"
+              htmlFor="login-password"
               className="mb-1 block text-sm font-medium text-slate-100"
             >
-              Email
+              Password
             </label>
             <input
-              id="login-email"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="login-password"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-white shadow-sm outline-none placeholder:text-slate-300 ring-emerald-400/40 focus:ring-2"
             />
           </div>

@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "loginId": "admin01",
+      "password": "admin123",
+      "name": "Admin User",
+      "email": "admin@ca.local",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "loginId": "eval01",
+      "password": "eval123",
+      "name": "Evaluator User",
+      "email": "evaluator@ca.local",
+      "role": "evaluator"
+    },
+    {
+      "id": 3,
+      "loginId": "student01",
+      "password": "student123",
+      "name": "Student User",
+      "email": "student@ca.local",
+      "role": "student"
+    }
+  ]
+}

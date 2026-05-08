@@ -240,7 +240,7 @@ export function ExamSessionProvider({
 
   const selectOption = useCallback(
     (optionIndex: number) => {
-      if (!session || !currentQuestionId || session.submittedAt) return
+      if (!session || !currentQuestionId || session.submittedAt) return 
       const meta = session.questionMeta[currentQuestionId]
       if (meta?.isCompound) return
       const r = session.responses[currentQuestionId]
@@ -252,7 +252,6 @@ export function ExamSessionProvider({
           [currentQuestionId]: {
             ...r,
             selectedAnswer: optionIndex,
-            // if they select MCQ now, clear any previously uploaded image for this question
             uploadedAnswerImage: null,
             uploadedAnswerFileName: null,
             visited: true,
