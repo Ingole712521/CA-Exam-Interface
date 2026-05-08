@@ -53,7 +53,7 @@ function ExamLayout() {
         await document.exitFullscreen()
       }
     } catch {
-      /* ignore */
+
     }
   }, [])
 

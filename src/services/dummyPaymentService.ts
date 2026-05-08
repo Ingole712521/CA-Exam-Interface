@@ -1,12 +1,6 @@
-/**
- * Stand-in for a real payment gateway. Always runs in the browser; no money moves.
- * Replace with API calls when a back-end exists.
- */
-
 export type DummyPayForResultParams = {
   examId: string
   examTitle: string
-  /** Shown on the receipt, e.g. "₹499" */
   amountDisplay: string
 }
 
@@ -36,16 +30,10 @@ function makeTransactionId(examId: string): string {
 }
 
 export type PayForTestResultOptions = {
-  /** Simulated network + gateway latency (ms). */
   delayMs?: number
-  /** If true, resolves with a failure (for UI error handling demos). */
   forceFailure?: boolean
 }
 
-/**
- * Simulates charging the test fee and authorizing result unlock for `examId`.
- * Does not persist anything; callers should call `setResultPaidForExam` on success.
- */
 export async function payForTestResult(
   params: DummyPayForResultParams,
   options?: PayForTestResultOptions,

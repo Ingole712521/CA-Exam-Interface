@@ -409,7 +409,6 @@ export function ExamSessionProvider({
             ...r,
             uploadedAnswerImage: dataUrl,
             uploadedAnswerFileName: fileName,
-            // upload questions aren’t MCQ; keep selectedAnswer empty
             selectedAnswer: null,
             visited: true,
           },

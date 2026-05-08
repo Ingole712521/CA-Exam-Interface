@@ -1,4 +1,4 @@
-/** How the item is framed in the UI (CA-style stems). */
+
 export type QuestionFormat =
   | 'standard'
   | 'theoretical'
@@ -7,7 +7,6 @@ export type QuestionFormat =
   | 'table'
   | 'upload'
 
-/** Default grid table (e.g. trial balance excerpt, demand schedule). */
 export interface QuestionStandardTableSpec {
   layout?: 'standard'
   caption?: string
@@ -15,19 +14,13 @@ export interface QuestionStandardTableSpec {
   rows: string[][]
 }
 
-/**
- * Receipts and Payments account layout: two facing columns (particular + ₹)
- * with a total row, CA-style presentation.
- */
 export interface QuestionReceiptsPaymentsTableSpec {
   layout: 'receipts_payments'
   caption?: string
-  /** Defaults: "Receipts", "Payments" */
   receiptsHeading?: string
   paymentsHeading?: string
   receipts: { particular: string; amount: string }[]
   payments: { particular: string; amount: string }[]
-  /** Omit both to hide the total row (e.g. dual-column particulars for P&L). */
   receiptsTotal?: string
   paymentsTotal?: string
 }
@@ -37,25 +30,19 @@ export type QuestionTableSpec =
   | QuestionReceiptsPaymentsTableSpec
 
 export interface QuestionImageSpec {
-  /** Public URL or Vite-resolved asset URL */
   src: string
   alt: string
 }
 
-/** One internal part of a CA-style compound question (OR groups, marks per part). */
 export interface RawQuestionPart {
   id: string
-  /** e.g. "(a)", "(b)" */
   label: string
   prompt: string
   marks: number
-  /** Parts sharing the same id form an “answer any one” group. */
   orGroupId?: string
   format?: QuestionFormat
   passage?: string
-  /** MCQ options; empty when `format === 'upload'`. */
   options: string[]
-  /** 0-based correct index for MCQs; ignored for uploads. */
   correctAnswer: number
   table?: QuestionTableSpec
   image?: QuestionImageSpec
@@ -63,20 +50,10 @@ export interface RawQuestionPart {
 
 export interface RawQuestion {
   id: string
-  /**
-   * Optional long theory / case facts / directions (shown above the main question).
-   */
   passage?: string
-  /** Lead-in / directions (e.g. “Answer the following”). */
   question: string
-  /** e.g. "Q2 (20 Marks)" */
   headline?: string
-  /** e.g. "Q1 (Compulsory – Mixed Concepts)" */
   questionCategory?: string
-  /**
-   * Internal sub-parts with optional OR between groups.
-   * When present, top-level `options` / `correctAnswer` are not used.
-   */
   parts?: RawQuestionPart[]
   
   options?: string[]

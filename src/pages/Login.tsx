@@ -41,8 +41,9 @@ export default function Login() {
         password: normalizedPassword,
       })
       const response = await fetch(`http://localhost:3001/users?${query.toString()}`)
+      console.log(response.json())
       if (!response.ok) {
-        throw new Error('Login service unavailable')
+        throw new Error('Login service unavailable')  
       }
       const matchedUsers = (await response.json()) as LoginApiUser[]
       const matchedUser = matchedUsers[0]
