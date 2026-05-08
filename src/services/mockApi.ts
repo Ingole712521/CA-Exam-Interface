@@ -24,6 +24,13 @@ export type ExamCatalogItem = {
   }[]
 }
 
+export type EvaluatorDashboardStats = {
+  evaluatorEmail: string
+  checkedCount: number
+  uncheckedCount: number
+  studentPaperChecked: number
+}
+
 const fallbackCatalog: ExamCatalogItem[] = mockExams.map((exam: ExamDefinition) => ({
   id: exam.id,
   title: exam.title,
@@ -64,5 +71,19 @@ export async function fetchExamCatalog(): Promise<ExamCatalogItem[]> {
     return catalog
   } catch {
     return fallbackCatalog
+  }
+}
+
+export async function fetchEvaluatorDashboardStats(
+  evaluatorEmail: string,
+): Promise<EvaluatorDashboardStats | null> {
+  try {
+    const query = new URLSearchParams({ evaluatorEmail })
+    const response = await fetch(`${API_BASE_URL}/evaluatorDashboard?${query.toString()}`)
+    if (!response.ok) throw new Error('evaluator dashboard fetch failed')
+    const data = (await response.json()) as EvaluatorDashboardStats[]
+    return data[0] ?? null
+  } catch {
+    return null
   }
 }

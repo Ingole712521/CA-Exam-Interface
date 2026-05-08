@@ -161,5 +161,28 @@
         }
       ]
     }
+  ],
+  "evaluatorDashboard": [
+    {
+      "id": 1,
+      "evaluatorEmail": "evaluator@ca.local",
+      "checkedCount": 24,
+      "uncheckedCount": 7,
+      "studentPaperChecked": 19
+    },
+    {
+      "id": 2,
+      "evaluatorEmail": "evaluator2@ca.local",
+      "checkedCount": 18,
+      "uncheckedCount": 11,
+      "studentPaperChecked": 14
+    },
+    {
+      "id": 3,
+      "evaluatorEmail": "evaluator3@ca.local",
+      "checkedCount": 12,
+      "uncheckedCount": 15,
+      "studentPaperChecked": 10
+    }
   ]
 }

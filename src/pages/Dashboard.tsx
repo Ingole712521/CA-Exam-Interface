@@ -5,7 +5,9 @@ import { AppHeader } from '../components/layout/AppHeader'
 import {
   fetchDashboardAnalytics,
   fetchExamCatalog,
+  fetchEvaluatorDashboardStats,
   type DashboardAnalytics as ApiDashboardAnalytics,
+  type EvaluatorDashboardStats,
   type ExamCatalogItem,
 } from '../services/mockApi'
 import {
@@ -268,6 +270,7 @@ export default function Dashboard() {
   const { user } = useAuth()
   const [catalog, setCatalog] = useState<ExamCatalogItem[]>([])
   const [analytics, setAnalytics] = useState<ApiDashboardAnalytics>(FALLBACK_ANALYTICS)
+  const [evaluatorStats, setEvaluatorStats] = useState<EvaluatorDashboardStats | null>(null)
 
   useEffect(() => {
     let mounted = true
@@ -285,6 +288,23 @@ export default function Dashboard() {
       mounted = false
     }
   }, [])
+
+  useEffect(() => {
+    let mounted = true
+    const loadEvaluatorStats = async () => {
+      if (user?.role !== 'evaluator' || !user.email) {
+        setEvaluatorStats(null)
+        return
+      }
+      const stats = await fetchEvaluatorDashboardStats(user.email)
+      if (!mounted) return
+      setEvaluatorStats(stats)
+    }
+    void loadEvaluatorStats()
+    return () => {
+      mounted = false
+    }
+  }, [user?.email, user?.role])
 
   const grouped = useMemo(() => examsByLevel(catalog), [catalog])
   const totalTests = catalog.length
@@ -381,15 +401,19 @@ export default function Dashboard() {
   }
 
   if (user?.role === 'evaluator') {
-    const checkedCount = reviewedByCurrentEvaluator.length
-    const uncheckedCount = Math.max(0, submittedPapers.length - checkedCount)
-    const studentPaperChecked = new Set(
+    const fallbackCheckedCount = reviewedByCurrentEvaluator.length
+    const fallbackUncheckedCount = Math.max(0, submittedPapers.length - fallbackCheckedCount)
+    const fallbackStudentPaperChecked = new Set(
       submittedPapers
         .filter((paper) =>
           reviewedByCurrentEvaluator.some((review) => review.reviewKey === paper.reviewKey),
         )
         .map((paper) => paper.submittedByEmail),
     ).size
+    const checkedCount = evaluatorStats?.checkedCount ?? fallbackCheckedCount
+    const uncheckedCount = evaluatorStats?.uncheckedCount ?? fallbackUncheckedCount
+    const studentPaperChecked =
+      evaluatorStats?.studentPaperChecked ?? fallbackStudentPaperChecked
 
     return (
       <div className="relative min-h-svh overflow-hidden bg-slate-100 dark:bg-slate-950">
