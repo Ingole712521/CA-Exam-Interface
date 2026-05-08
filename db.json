@@ -23,6 +23,143 @@
       "name": "Student User",
       "email": "student@ca.local",
       "role": "student"
+    },
+    {
+      "id": 4,
+      "loginId": "admin02",
+      "password": "admin456",
+      "name": "Admin Manager",
+      "email": "admin2@ca.local",
+      "role": "admin"
+    },
+    {
+      "id": 5,
+      "loginId": "eval02",
+      "password": "eval456",
+      "name": "Evaluator Sharma",
+      "email": "evaluator2@ca.local",
+      "role": "evaluator"
+    },
+    {
+      "id": 6,
+      "loginId": "eval03",
+      "password": "eval789",
+      "name": "Evaluator Patel",
+      "email": "evaluator3@ca.local",
+      "role": "evaluator"
+    },
+    {
+      "id": 7,
+      "loginId": "student02",
+      "password": "student456",
+      "name": "Riya Gupta",
+      "email": "riya.gupta@ca.local",
+      "role": "student"
+    },
+    {
+      "id": 8,
+      "loginId": "student03",
+      "password": "student789",
+      "name": "Aman Verma",
+      "email": "aman.verma@ca.local",
+      "role": "student"
+    },
+    {
+      "id": 9,
+      "loginId": "student04",
+      "password": "student999",
+      "name": "Neha Singh",
+      "email": "neha.singh@ca.local",
+      "role": "student"
+    }
+  ],
+  "dashboardAnalytics": {
+    "totalStudents": 1280,
+    "passStudents": 842,
+    "failStudents": 438,
+    "liveTestStudents": 173
+  },
+  "examCatalog": [
+    {
+      "id": "ca-foundation-mock-1",
+      "title": "CA Foundation Mock Test 1",
+      "durationMinutes": 180,
+      "level": "foundation",
+      "feeDisplay": "\u20b9499",
+      "sections": [
+        {
+          "id": "accounts",
+          "name": "Accounts",
+          "assessmentType": "subjective",
+          "questionCount": 20
+        },
+        {
+          "id": "law",
+          "name": "Law",
+          "assessmentType": "subjective",
+          "questionCount": 15
+        },
+        {
+          "id": "economics",
+          "name": "Economics",
+          "assessmentType": "mcq",
+          "questionCount": 30
+        }
+      ]
+    },
+    {
+      "id": "ca-intermediate-mock-1",
+      "title": "CA Intermediate Mock Test 1",
+      "durationMinutes": 180,
+      "level": "intermediate",
+      "feeDisplay": "\u20b9799",
+      "sections": [
+        {
+          "id": "advanced-accounting",
+          "name": "Advanced Accounting",
+          "assessmentType": "subjective",
+          "questionCount": 18
+        },
+        {
+          "id": "corporate-law",
+          "name": "Corporate Law",
+          "assessmentType": "subjective",
+          "questionCount": 16
+        },
+        {
+          "id": "taxation",
+          "name": "Taxation",
+          "assessmentType": "mcq",
+          "questionCount": 28
+        }
+      ]
+    },
+    {
+      "id": "ca-final-mock-1",
+      "title": "CA Final Mock Test 1",
+      "durationMinutes": 180,
+      "level": "final",
+      "feeDisplay": "\u20b9999",
+      "sections": [
+        {
+          "id": "financial-reporting",
+          "name": "Financial Reporting",
+          "assessmentType": "subjective",
+          "questionCount": 15
+        },
+        {
+          "id": "advanced-audit",
+          "name": "Advanced Auditing",
+          "assessmentType": "subjective",
+          "questionCount": 15
+        },
+        {
+          "id": "strategic-fm",
+          "name": "Strategic Financial Management",
+          "assessmentType": "mcq",
+          "questionCount": 25
+        }
+      ]
     }
   ]
 }

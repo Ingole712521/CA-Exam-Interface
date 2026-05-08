@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AppHeader } from '../components/layout/AppHeader'
-import { mockExams } from '../data/mockExams'
 import type { CaLevel } from '../types/exam'
+import { fetchExamCatalog, type ExamCatalogItem } from '../services/mockApi'
 
 const LEVEL_LABEL: Record<CaLevel, string> = {
   foundation: 'Foundation',
@@ -16,10 +16,24 @@ export default function StudentTestPage() {
   const [level, setLevel] = useState<CaLevel>('foundation')
   const [topic, setTopic] = useState('')
   const [chapter, setChapter] = useState(CHAPTER_OPTIONS[0])
+  const [catalog, setCatalog] = useState<ExamCatalogItem[]>([])
+
+  useEffect(() => {
+    let mounted = true
+    const loadCatalog = async () => {
+      const items = await fetchExamCatalog()
+      if (!mounted) return
+      setCatalog(items)
+    }
+    void loadCatalog()
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   const levelExams = useMemo(
-    () => mockExams.filter((exam) => exam.level === level),
-    [level],
+    () => catalog.filter((exam) => exam.level === level),
+    [catalog, level],
   )
 
   const availableTopics = useMemo(() => {

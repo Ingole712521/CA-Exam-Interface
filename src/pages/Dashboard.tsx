@@ -1,7 +1,13 @@
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { mockExams } from '../data/mockExams'
 import { AppHeader } from '../components/layout/AppHeader'
+import {
+  fetchDashboardAnalytics,
+  fetchExamCatalog,
+  type DashboardAnalytics as ApiDashboardAnalytics,
+  type ExamCatalogItem,
+} from '../services/mockApi'
 import {
   loadExamSession,
   loadReviewedPapers,
@@ -9,7 +15,7 @@ import {
   loadSubmittedPapers,
   startFreshExamAttempt,
 } from '../utils/examSessionStorage'
-import type { CaLevel, ExamDefinition, SectionAssessmentType } from '../types/exam'
+import type { CaLevel, SectionAssessmentType } from '../types/exam'
 
 const LEVEL_ORDER: CaLevel[] = ['foundation', 'intermediate', 'final']
 
@@ -86,22 +92,15 @@ const LEVEL_STYLE: Record<
   },
 }
 
-type DashboardStudentAnalytics = {
-  totalStudents: number
-  passStudents: number
-  failStudents: number
-  liveTestStudents: number
-}
-
-const STUDENT_ANALYTICS: DashboardStudentAnalytics = {
+const FALLBACK_ANALYTICS: ApiDashboardAnalytics = {
   totalStudents: 1280,
   passStudents: 842,
   failStudents: 438,
   liveTestStudents: 173,
 }
 
-function examsByLevel(exams: ExamDefinition[]): Record<CaLevel, ExamDefinition[]> {
-  const map: Record<CaLevel, ExamDefinition[]> = {
+function examsByLevel(exams: ExamCatalogItem[]): Record<CaLevel, ExamCatalogItem[]> {
+  const map: Record<CaLevel, ExamCatalogItem[]> = {
     foundation: [],
     intermediate: [],
     final: [],
@@ -167,8 +166,8 @@ function IconFee(props: { className?: string }) {
   )
 }
 
-function ExamCard({ exam, level }: { exam: ExamDefinition; level: CaLevel }) {
-  const totalQs = exam.sections.reduce((n, s) => n + s.questions.length, 0)
+function ExamCard({ exam, level }: { exam: ExamCatalogItem; level: CaLevel }) {
+  const totalQs = exam.sections.reduce((n, s) => n + s.questionCount, 0)
   const canResume = sessionActive(exam.id)
   const st = LEVEL_STYLE[level]
 
@@ -267,16 +266,35 @@ function ExamCard({ exam, level }: { exam: ExamDefinition; level: CaLevel }) {
 
 export default function Dashboard() {
   const { user } = useAuth()
-  const grouped = examsByLevel(mockExams)
-  const totalTests = mockExams.length
-  const totalSubjects = new Set(
-    mockExams.flatMap((exam) => exam.sections.map((section) => section.name)),
-  ).size
-  const totalQuestions = mockExams.reduce(
-    (n, e) => n + e.sections.reduce((m, s) => m + s.questions.length, 0),
+  const [catalog, setCatalog] = useState<ExamCatalogItem[]>([])
+  const [analytics, setAnalytics] = useState<ApiDashboardAnalytics>(FALLBACK_ANALYTICS)
+
+  useEffect(() => {
+    let mounted = true
+    const load = async () => {
+      const [catalogData, analyticsData] = await Promise.all([
+        fetchExamCatalog(),
+        fetchDashboardAnalytics(),
+      ])
+      if (!mounted) return
+      setCatalog(catalogData)
+      setAnalytics(analyticsData)
+    }
+    void load()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  const grouped = useMemo(() => examsByLevel(catalog), [catalog])
+  const totalTests = catalog.length
+  const totalSubjects = new Set(catalog.flatMap((exam) => exam.sections.map((section) => section.name)))
+    .size
+  const totalQuestions = catalog.reduce(
+    (n, e) => n + e.sections.reduce((m, s) => m + s.questionCount, 0),
     0,
   )
-  const activeAttempts = mockExams.filter((e) => sessionActive(e.id)).length
+  const activeAttempts = catalog.filter((e) => sessionActive(e.id)).length
   const studentResults = loadResultHistory()
   const testsGiven = studentResults.length
   const averageMark = testsGiven
@@ -476,7 +494,7 @@ export default function Dashboard() {
                 Number of students
               </span>
               <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
-                {STUDENT_ANALYTICS.totalStudents}
+                {analytics.totalStudents}
               </span>
               <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 Registered learners
@@ -509,7 +527,7 @@ export default function Dashboard() {
                 Students pass
               </span>
               <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
-                {STUDENT_ANALYTICS.passStudents}
+                {analytics.passStudents}
               </span>
               <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 Cleared assessment criteria
@@ -520,7 +538,7 @@ export default function Dashboard() {
                 Students fail
               </span>
               <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
-                {STUDENT_ANALYTICS.failStudents}
+                {analytics.failStudents}
               </span>
               <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 Did not clear minimum score
@@ -531,7 +549,7 @@ export default function Dashboard() {
                 Students giving live test
               </span>
               <span className="mt-1 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">
-                {STUDENT_ANALYTICS.liveTestStudents}
+                {analytics.liveTestStudents}
               </span>
               <span className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 Active right now
